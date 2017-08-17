@@ -11,6 +11,8 @@ export class VideoPlayer {
 
     private isPlaying: boolean = false;
     private isMuted: boolean = false;
+    private progress: number = 0;
+    private duration: number = 0;
 
     @Listen('play')
     playHandler() {
@@ -36,11 +38,22 @@ export class VideoPlayer {
         this.videoElement.unmuteVideo();
     }
 
+    @Listen('timeupdate')
+    timeupdateHandler(event) {
+        this.progress = event.detail;
+    }
+
+    @Listen('duration')
+    durationHandler(event) {
+        this.duration = event.detail;
+    }
+
     render() {
         return ([
             <video-element src={this.url}></video-element>,
             <play-button playing={this.isPlaying}></play-button>,
-            <mute-button muted={this.isMuted}></mute-button>
+            <mute-button muted={this.isMuted}></mute-button>,
+            <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
         ]);
     }
 

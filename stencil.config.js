@@ -4,7 +4,8 @@ exports.config = {
       'video-player',
       'video-element',
       'play-button',
-      'mute-button'
+      'mute-button',
+      'scrub-bar'
     ] }
   ]
 };

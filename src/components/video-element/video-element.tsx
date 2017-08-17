@@ -11,6 +11,20 @@ export class VideoElement {
 
     @Event() play: EventEmitter;
     @Event() pause: EventEmitter;
+    @Event() timeupdate: EventEmitter;
+    @Event() duration: EventEmitter;
+
+    componentDidLoad() {
+        if (this.video) {
+            this.video.addEventListener('timeupdate', () => {
+                this.timeupdate.emit(this.video.currentTime);
+            });
+            if (this.video.duration) this.duration.emit(this.video.duration);
+            this.video.addEventListener('loadedmetadata', () => {
+                this.duration.emit(this.video.duration);
+            });
+        }
+    }
 
     @Prop() src: string;
 
