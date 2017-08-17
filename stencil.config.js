@@ -1,6 +1,11 @@
 exports.config = {
   bundles: [
-    { components: ['video-player', 'video-element', 'play-button'] }
+    { components: [
+      'video-player',
+      'video-element',
+      'play-button',
+      'mute-button'
+    ] }
   ]
 };
 

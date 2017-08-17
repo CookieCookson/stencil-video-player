@@ -10,6 +10,7 @@ export class VideoPlayer {
     private videoElement:any = document.querySelector('video-element');
 
     private isPlaying: boolean = false;
+    private isMuted: boolean = false;
 
     @Listen('play')
     playHandler() {
@@ -23,10 +24,23 @@ export class VideoPlayer {
         this.videoElement.pauseVideo();
     }
 
+    @Listen('mute')
+    muteHandler() {
+        this.isMuted = true;
+        this.videoElement.muteVideo();
+    }
+
+    @Listen('unmute')
+    unmuteHandler() {
+        this.isMuted = false;
+        this.videoElement.unmuteVideo();
+    }
+
     render() {
         return ([
             <video-element src={this.url}></video-element>,
-            <play-button playing={this.isPlaying}></play-button>
+            <play-button playing={this.isPlaying}></play-button>,
+            <mute-button muted={this.isMuted}></mute-button>
         ]);
     }
 

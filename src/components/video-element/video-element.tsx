@@ -23,6 +23,16 @@ export class VideoElement {
         this.video.pause();
     }
 
+    @Method()
+    muteVideo() {
+        this.video.volume = 0;
+    }
+
+    @Method()
+    unmuteVideo() {
+        this.video.volume = 1;
+    }
+
     handleClick() {
         if (this.video.paused) this.play.emit();
         else this.pause.emit();
