@@ -8,8 +8,9 @@ import { Component, Prop, Method, Event, EventEmitter } from '@stencil/core';
 export class VideoElement {
 
     private video:any = document.querySelector('video');
-        @Event() play: EventEmitter;
-        @Event() pause: EventEmitter;
+
+    @Event() play: EventEmitter;
+    @Event() pause: EventEmitter;
 
     @Prop() src: string;
 
