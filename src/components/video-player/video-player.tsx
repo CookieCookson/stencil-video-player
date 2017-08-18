@@ -48,6 +48,11 @@ export class VideoPlayer {
         this.duration = event.detail;
     }
 
+    @Listen('seek')
+    seekHandler(event) {
+        this.videoElement.seekTo(event.detail);
+    }
+
     render() {
         return ([
             <video-element src={this.url}></video-element>,

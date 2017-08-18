@@ -1,6 +1,5 @@
 import { Component, Prop, Method, Event, EventEmitter } from '@stencil/core';
 
-
 @Component({
     tag: 'video-element',
     styleUrl: 'video-element.scss'
@@ -48,6 +47,11 @@ export class VideoElement {
         this.video.volume = 1;
     }
 
+    @Method()
+    seekTo(time) {
+        this.video.currentTime = this.video.duration * time;
+    }
+
     handleClick() {
         if (this.video.paused) this.play.emit();
         else this.pause.emit();
@@ -55,7 +59,7 @@ export class VideoElement {
 
     render() {
         return (
-            <video onClick={ () => this.handleClick()}>
+            <video onClick={ () => this.handleClick() }>
                 <source src={this.src} />
             </video>
         );
