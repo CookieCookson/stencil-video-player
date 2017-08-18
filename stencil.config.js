@@ -5,7 +5,8 @@ exports.config = {
       'video-element',
       'play-button',
       'mute-button',
-      'scrub-bar'
+      'scrub-bar',
+      'time-label'
     ] }
   ]
 };

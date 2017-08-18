@@ -58,7 +58,9 @@ export class VideoPlayer {
             <video-element src={this.url}></video-element>,
             <play-button playing={this.isPlaying}></play-button>,
             <mute-button muted={this.isMuted}></mute-button>,
-            <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
+            <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>,
+            <time-label time={this.progress}></time-label>,
+            <time-label time={this.duration}></time-label>
         ]);
     }
 
