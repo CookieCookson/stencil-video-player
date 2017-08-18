@@ -17,15 +17,15 @@ export class PlayButton {
     render() {
         if (this.playing) {
             return (
-                <div onClick={ () => this.handleClick()}>
+                <button onClick={ () => this.handleClick()}>
                     Pause
-                </div>
+                </button>
             );
         } else {
             return (
-                <div onClick={ () => this.handleClick()}>
+                <button onClick={ () => this.handleClick()}>
                     Play
-                </div>
+                </button>
             );
         }
     }

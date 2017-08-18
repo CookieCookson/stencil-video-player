@@ -17,15 +17,15 @@ import { Component, Event, EventEmitter, Prop } from '@stencil/core';
     render() {
         if (this.muted) {
             return (
-                <div onClick={ () => this.handleClick()}>
+                <button onClick={ () => this.handleClick()}>
                     Unmute
-                </div>
+                </button>
             );
         } else {
             return (
-                <div onClick={ () => this.handleClick()}>
+                <button onClick={ () => this.handleClick()}>
                     Mute
-                </div>
+                </button>
             );
         }
     }

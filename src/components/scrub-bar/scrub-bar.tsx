@@ -1,7 +1,8 @@
 import { Component, Prop, Event, EventEmitter } from '@stencil/core';
 
 @Component({
-    tag: 'scrub-bar'
+    tag: 'scrub-bar',
+    styleUrl: 'scrub-bar.scss'
 })
 export class ScrubBar {
     @Event() seek: EventEmitter;
