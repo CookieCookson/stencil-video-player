@@ -14,7 +14,7 @@ export class ScrubBar {
     private scrubElement: HTMLElement;
     private isDown:boolean = false;
     
-    componentWillLoad() {
+    componentDidLoad() {
         this.scrubElement = this.element.querySelector('progress');
     }
 
@@ -77,12 +77,11 @@ export class ScrubBar {
     }
 
     render() {
-        return ([
-            <span>Scrub</span>,
+        return (
             <progress
                 max={this.duration}
                 value={this.progress}
             ></progress>
-        ]);
+        );
     }
 }

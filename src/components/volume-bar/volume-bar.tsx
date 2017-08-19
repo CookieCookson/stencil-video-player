@@ -13,7 +13,7 @@ export class VolumeBar {
     private volumeElement: HTMLElement;
     private isDown:boolean = false;
     
-    componentWillLoad() {
+    componentDidLoad() {
         this.volumeElement = this.element.querySelector('progress');
     }
 
@@ -76,12 +76,11 @@ export class VolumeBar {
     }
 
     render() {
-        return ([
-            <span>Volume</span>,
+        return (
             <progress
                 max='1'
                 value={this.level}
             ></progress>
-        ]);
+        );
     }
 }

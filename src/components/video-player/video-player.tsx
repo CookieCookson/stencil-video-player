@@ -109,13 +109,19 @@ export class VideoPlayer {
     render() {
         return ([
             <video-element src={this.url}></video-element>,
-            <play-button playing={this.isPlaying}></play-button>,
-            <mute-button muted={this.isMuted}></mute-button>,
-            <fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button>,
-            <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>,
-            <volume-bar level={this.volume}></volume-bar>,
-            <time-label time={this.progress}></time-label>,
-            <time-label time={this.duration}></time-label>
+            <div><play-button playing={this.isPlaying}></play-button></div>,
+            <div><mute-button muted={this.isMuted}></mute-button></div>,
+            <div><fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button></div>,
+            <div>
+                <label>Scrub</label>
+                <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
+            </div>,
+            <div>
+                <label>Volume</label>
+                <volume-bar level={this.volume}></volume-bar>
+            </div>,
+            <div><time-label time={this.progress}></time-label></div>,
+            <div><time-label time={this.duration}></time-label></div>
         ]);
     }
 
