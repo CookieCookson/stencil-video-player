@@ -1,4 +1,4 @@
-import { Component, Prop, Listen, Element } from '@stencil/core';
+import { Component, Prop, Listen, Element, State } from '@stencil/core';
 
 @Component({
     tag: 'video-player',
@@ -6,15 +6,15 @@ import { Component, Prop, Listen, Element } from '@stencil/core';
 })
 export class VideoPlayer {
     @Prop() url: string;
+    @State() isPlaying: boolean = false;
+    @State() isMuted: boolean = false;
+    @State() progress: number = 0;
+    @State() duration: number = 0;
+    @State() volume: number = 1;
 
     @Element() element: HTMLElement;
 
     private videoElement: any;
-    private isPlaying: boolean = false;
-    private isMuted: boolean = false;
-    private progress: number = 0;
-    private duration: number = 0;
-    private volume: number = 1;
 
     componentWillLoad() {
         this.videoElement = this.element.querySelector('video-element');
@@ -65,6 +65,24 @@ export class VideoPlayer {
         if (this.volume === 0) this.isMuted = true;
         else this.isMuted = false;
         this.videoElement.setVolume(event.detail);
+    }
+
+    @Listen('body:keyup')
+    keyboardHandler(keyboardEvent) {
+        switch(keyboardEvent.code) {
+            case 'Space': {
+                keyboardEvent.preventDefault();
+                if (!this.isPlaying) this.playHandler();
+                else this.pauseHandler();
+                break;
+            }
+            case 'KeyM': {
+                keyboardEvent.preventDefault();
+                if (!this.isMuted) this.muteHandler();
+                else this.unmuteHandler();
+                break;
+            }
+        }
     }
 
     render() {
