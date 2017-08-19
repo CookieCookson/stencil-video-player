@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, Element } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, Element, Listen } from '@stencil/core';
 
 @Component({
     tag: 'scrub-bar',
@@ -16,31 +16,51 @@ export class ScrubBar {
     
     componentWillLoad() {
         this.scrubElement = this.element.querySelector('progress');
-        document.addEventListener('mousemove', (event) => this.handleMove(event));
-        document.addEventListener('mouseup', (event) => this.handleUp(event));
-        document.addEventListener('touchmove', (event) => this.handleMove(event));
-        document.addEventListener('touchend', (event) => this.handleUp(event));
-        if (this.scrubElement) {
-            this.scrubElement.addEventListener('touchstart', (event) => this.handleDown(event));
-        }
+    }
+
+    @Listen('touchstart')
+    touchstartHandler(event) {
+        this.handleDown(event);
+    }
+
+    @Listen('mousedown')
+    mousedownHandler(event) {
+        this.handleDown(event);
+    }
+
+    @Listen('body:touchmove')
+    touchmoveHandler(event) {
+        this.handleMove(event);
+    }
+
+    @Listen('body:mousemove')
+    mousemoveHandler(event) {
+        this.handleMove(event);
+    }
+
+    @Listen('body:touchend')
+    touchendHandler(event) {
+        this.handleUp(event);
+    }
+
+    @Listen('body:mouseup')
+    mouseupHandler(event) {
+        this.handleUp(event);
     }
 
     handleDown(event) {
-        event.preventDefault();
         this.isDown = true;
         this.calculateSeek(event);
     }
 
     handleMove(event) {
         if (this.isDown) {
-            event.preventDefault();
             this.calculateSeek(event);
         }
     }
 
     handleUp(event) {
         if (this.isDown) {
-            event.preventDefault();
             this.isDown = false;
             this.calculateSeek(event);
         }
@@ -62,7 +82,6 @@ export class ScrubBar {
             <progress
                 max={this.duration}
                 value={this.progress}
-                onMouseDown={ (mouseDownEvent) => this.handleDown(mouseDownEvent) }
             ></progress>
         ]);
     }

@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, Element } from '@stencil/core';
+import { Component, Prop, Event, EventEmitter, Element, Listen } from '@stencil/core';
 
 @Component({
     tag: 'volume-bar',
@@ -15,31 +15,51 @@ export class VolumeBar {
     
     componentWillLoad() {
         this.volumeElement = this.element.querySelector('progress');
-        document.addEventListener('mousemove', (event) => this.handleMove(event));
-        document.addEventListener('mouseup', (event) => this.handleUp(event));
-        document.addEventListener('touchmove', (event) => this.handleMove(event));
-        document.addEventListener('touchend', (event) => this.handleUp(event));
-        if (this.volumeElement) {
-            this.volumeElement.addEventListener('touchstart', (event) => this.handleDown(event));
-        }
+    }
+
+    @Listen('touchstart')
+    touchstartHandler(event) {
+        this.handleDown(event);
+    }
+
+    @Listen('mousedown')
+    mousedownHandler(event) {
+        this.handleDown(event);
+    }
+
+    @Listen('body:touchmove')
+    touchmoveHandler(event) {
+        this.handleMove(event);
+    }
+
+    @Listen('body:mousemove')
+    mousemoveHandler(event) {
+        this.handleMove(event);
+    }
+
+    @Listen('body:touchend')
+    touchendHandler(event) {
+        this.handleUp(event);
+    }
+
+    @Listen('body:mouseup')
+    mouseupHandler(event) {
+        this.handleUp(event);
     }
 
     handleDown(event) {
-        event.preventDefault();
         this.isDown = true;
         this.calculateVolume(event);
     }
 
     handleMove(event) {
         if (this.isDown) {
-            event.preventDefault();
             this.calculateVolume(event);
         }
     }
 
     handleUp(event) {
         if (this.isDown) {
-            event.preventDefault();
             this.isDown = false;
             this.calculateVolume(event);
         }
@@ -61,7 +81,6 @@ export class VolumeBar {
             <progress
                 max='1'
                 value={this.level}
-                onMouseDown={ (mouseDownEvent) => this.handleDown(mouseDownEvent) }
             ></progress>
         ]);
     }
