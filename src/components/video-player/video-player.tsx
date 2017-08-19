@@ -6,6 +6,7 @@ import { Component, Prop, Listen, Element, State } from '@stencil/core';
 })
 export class VideoPlayer {
     @Prop() url: string;
+    @State() isFullscreen: boolean = false;
     @State() isPlaying: boolean = false;
     @State() isMuted: boolean = false;
     @State() progress: number = 0;
@@ -62,7 +63,7 @@ export class VideoPlayer {
     @Listen('volume')
     volumeHandler(event) {
         this.volume = event.detail;
-        if (this.volume === 0) this.isMuted = true;
+        if (event.detail === 0) this.isMuted = true;
         else this.isMuted = false;
         this.videoElement.setVolume(event.detail);
     }
@@ -82,7 +83,27 @@ export class VideoPlayer {
                 else this.unmuteHandler();
                 break;
             }
+            case 'KeyF': {
+                keyboardEvent.preventDefault();
+                if (!this.isFullscreen) this.enterFullscreen();
+                else this.exitFullscreen();
+            }
         }
+    }
+
+    @Listen('enterFullscreen')
+    enterFullscreen() {
+        this.element.webkitRequestFullscreen();
+    }
+
+    @Listen('exitFullscreen')
+    exitFullscreen() {
+        document.webkitExitFullscreen();
+    }
+
+    @Listen('webkitfullscreenchange')
+    fullscreenchangeHandler() {
+        this.isFullscreen = document.webkitIsFullScreen;
     }
 
     render() {
@@ -90,6 +111,7 @@ export class VideoPlayer {
             <video-element src={this.url}></video-element>,
             <play-button playing={this.isPlaying}></play-button>,
             <mute-button muted={this.isMuted}></mute-button>,
+            <fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button>,
             <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>,
             <volume-bar level={this.volume}></volume-bar>,
             <time-label time={this.progress}></time-label>,
