@@ -9,8 +9,8 @@ export class VideoPlayer {
     @State() isFullscreen: boolean = false;
     @State() isPlaying: boolean = false;
     @State() isMuted: boolean = false;
-    @State() progress: number = 0;
-    @State() duration: number = 0;
+    @State() progress: number = 0.01;
+    @State() duration: number = 1;
     @State() volume: number = 1;
 
     @Element() element: HTMLElement;
@@ -109,19 +109,15 @@ export class VideoPlayer {
     render() {
         return ([
             <video-element src={this.url}></video-element>,
-            <div><play-button playing={this.isPlaying}></play-button></div>,
-            <div><mute-button muted={this.isMuted}></mute-button></div>,
-            <div><fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button></div>,
-            <div>
-                <label>Scrub</label>
-                <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
-            </div>,
-            <div>
-                <label>Volume</label>
+            <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>,
+            <div class='toolbar-bottom'>
+                <play-button playing={this.isPlaying}></play-button>
+                <time-label time={this.progress}></time-label>
+                <time-label time={this.duration}></time-label>
+                <mute-button muted={this.isMuted}></mute-button>
                 <volume-bar level={this.volume}></volume-bar>
-            </div>,
-            <div><time-label time={this.progress}></time-label></div>,
-            <div><time-label time={this.duration}></time-label></div>
+                <fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button>
+            </div>
         ]);
     }
 

@@ -18,13 +18,13 @@ export class PlayButton {
         if (this.playing) {
             return (
                 <button onClick={ () => this.handleClick()}>
-                    Pause
+                    ⏸️
                 </button>
             );
         } else {
             return (
                 <button onClick={ () => this.handleClick()}>
-                    Play
+                    ▶️
                 </button>
             );
         }

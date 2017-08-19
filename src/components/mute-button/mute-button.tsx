@@ -18,13 +18,13 @@ export class MuteButton {
         if (this.muted) {
             return (
                 <button onClick={ () => this.handleClick()}>
-                    Unmute
+                    🔇
                 </button>
             );
         } else {
             return (
                 <button onClick={ () => this.handleClick()}>
-                    Mute
+                    🔊
                 </button>
             );
         }

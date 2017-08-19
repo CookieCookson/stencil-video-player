@@ -5,8 +5,8 @@ import { Component, Prop, Event, EventEmitter, Element, Listen } from '@stencil/
     styleUrl: 'scrub-bar.scss'
 })
 export class ScrubBar {
-    @Prop() progress: number = 1;
-    @Prop() duration: number = 1;
+    @Prop() progress: number;
+    @Prop() duration: number;
 
     @Event() seek: EventEmitter;
     @Element() element: HTMLElement;
@@ -80,7 +80,7 @@ export class ScrubBar {
         return (
             <progress
                 max={this.duration}
-                value={this.progress}
+                value={this.progress || 0}
             ></progress>
         );
     }

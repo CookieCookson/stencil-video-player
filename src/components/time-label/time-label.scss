@@ -1,4 +1,16 @@
 time-label {
     display: block;
-    font-family: Arial;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    background: #fff;
+    border-radius: 5px;
+    margin: 0 5px;
+    padding: 5px;
+    height: 30px;
+    box-sizing: border-box;
+    pointer-events: none; // disable cursor highlighting
+    span {
+        display: inline-block;
+        width: 10px;
+        text-align: center;
+    }
 }

@@ -18,13 +18,13 @@ export class FullscreenButton {
         if (this.fullscreen) {
             return (
                 <button onClick={ () => this.handleClick()}>
-                    Exit Fullscreen
+                    🔳
                 </button>
             );
         } else {
             return (
                 <button onClick={ () => this.handleClick()}>
-                    Enter Fullscreen
+                    🔲
                 </button>
             );
         }
