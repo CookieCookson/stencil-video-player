@@ -1,21 +1,20 @@
 import { Component, Prop, Event, EventEmitter, Element } from '@stencil/core';
 
 @Component({
-    tag: 'scrub-bar',
-    styleUrl: 'scrub-bar.scss'
+    tag: 'volume-bar',
+    styleUrl: 'volume-bar.scss'
 })
-export class ScrubBar {
-    @Prop() progress: number = 1;
-    @Prop() duration: number = 1;
-
-    @Event() seek: EventEmitter;
+export class VolumeBar {
+    @Prop() level: number;
+    
+    @Event() volume: EventEmitter;
     @Element() element: HTMLElement;
 
-    private scrubElement: HTMLElement;
+    private volumeElement: HTMLElement;
     private isDown:boolean = false;
     
     componentWillLoad() {
-        this.scrubElement = this.element.querySelector('progress');
+        this.volumeElement = this.element.querySelector('progress');
         document.addEventListener('mousemove', (event) => this.handleMove(event));
         document.addEventListener('mouseup', (event) => this.handleUp(event));
     }
@@ -28,7 +27,7 @@ export class ScrubBar {
     handleMove(event) {
         if (this.isDown) {
             event.preventDefault();
-            this.calculateSeek(event);
+            this.calculateVolume(event);
         }
     }
 
@@ -36,24 +35,24 @@ export class ScrubBar {
         if (this.isDown) {
             event.preventDefault();
             this.isDown = false;
-            this.calculateSeek(event);
+            this.calculateVolume(event);
         }
     }
     
-    calculateSeek(event) {
-        let controlPosition = this.scrubElement.getBoundingClientRect().left;
-        let percent = (event.clientX - controlPosition) / this.scrubElement.offsetWidth;
+    calculateVolume(event) {
+        let controlPosition = this.volumeElement.getBoundingClientRect().left;
+        let percent = (event.clientX - controlPosition) / this.volumeElement.offsetWidth;
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
-        this.seek.emit(percent);
+        this.volume.emit(percent);
     }
 
     render() {
         return ([
-            <span>Scrub</span>,
+            <span>Volume</span>,
             <progress
-                max={this.duration}
-                value={this.progress}
+                max='1'
+                value={this.level}
                 onMouseDown={ (downEvent) => this.handleDown(downEvent) }
             ></progress>
         ]);

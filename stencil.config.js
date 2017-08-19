@@ -6,6 +6,7 @@ exports.config = {
       'play-button',
       'mute-button',
       'scrub-bar',
+      'volume-bar',
       'time-label'
     ] }
   ]

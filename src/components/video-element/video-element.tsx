@@ -52,6 +52,11 @@ export class VideoElement {
         this.video.currentTime = this.video.duration * time;
     }
 
+    @Method()
+    setVolume(volume) {
+        this.video.volume = volume;
+    }
+
     handleClick() {
         if (this.video.paused) this.play.emit();
         else this.pause.emit();
