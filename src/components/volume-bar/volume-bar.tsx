@@ -17,11 +17,17 @@ export class VolumeBar {
         this.volumeElement = this.element.querySelector('progress');
         document.addEventListener('mousemove', (event) => this.handleMove(event));
         document.addEventListener('mouseup', (event) => this.handleUp(event));
+        document.addEventListener('touchmove', (event) => this.handleMove(event));
+        document.addEventListener('touchend', (event) => this.handleUp(event));
+        if (this.volumeElement) {
+            this.volumeElement.addEventListener('touchstart', (event) => this.handleDown(event));
+        }
     }
 
     handleDown(event) {
         event.preventDefault();
         this.isDown = true;
+        this.calculateVolume(event);
     }
 
     handleMove(event) {
@@ -40,8 +46,10 @@ export class VolumeBar {
     }
     
     calculateVolume(event) {
+        let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
+        if (!clientX) return;
         let controlPosition = this.volumeElement.getBoundingClientRect().left;
-        let percent = (event.clientX - controlPosition) / this.volumeElement.offsetWidth;
+        let percent = (clientX - controlPosition) / this.volumeElement.offsetWidth;
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
         this.volume.emit(percent);
@@ -53,7 +61,7 @@ export class VolumeBar {
             <progress
                 max='1'
                 value={this.level}
-                onMouseDown={ (downEvent) => this.handleDown(downEvent) }
+                onMouseDown={ (mouseDownEvent) => this.handleDown(mouseDownEvent) }
             ></progress>
         ]);
     }

@@ -1,3 +1,19 @@
 volume-bar {
+    $padding: 20px;
     display: block;
+    progress {
+        margin: $padding;
+        position: relative;
+        display: block;
+        &::after {
+            content: '';
+            display: block;
+            position: absolute;
+            border: 1px solid #eee;
+            right: -$padding;
+            bottom: -$padding;
+            left: -$padding;
+            top: -$padding;
+        }
+    }
 }

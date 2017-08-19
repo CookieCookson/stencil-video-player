@@ -18,11 +18,17 @@ export class ScrubBar {
         this.scrubElement = this.element.querySelector('progress');
         document.addEventListener('mousemove', (event) => this.handleMove(event));
         document.addEventListener('mouseup', (event) => this.handleUp(event));
+        document.addEventListener('touchmove', (event) => this.handleMove(event));
+        document.addEventListener('touchend', (event) => this.handleUp(event));
+        if (this.scrubElement) {
+            this.scrubElement.addEventListener('touchstart', (event) => this.handleDown(event));
+        }
     }
 
     handleDown(event) {
         event.preventDefault();
         this.isDown = true;
+        this.calculateSeek(event);
     }
 
     handleMove(event) {
@@ -41,8 +47,10 @@ export class ScrubBar {
     }
     
     calculateSeek(event) {
+        let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
+        if (!clientX) return;
         let controlPosition = this.scrubElement.getBoundingClientRect().left;
-        let percent = (event.clientX - controlPosition) / this.scrubElement.offsetWidth;
+        let percent = (clientX - controlPosition) / this.scrubElement.offsetWidth;
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
         this.seek.emit(percent);
@@ -54,7 +62,7 @@ export class ScrubBar {
             <progress
                 max={this.duration}
                 value={this.progress}
-                onMouseDown={ (downEvent) => this.handleDown(downEvent) }
+                onMouseDown={ (mouseDownEvent) => this.handleDown(mouseDownEvent) }
             ></progress>
         ]);
     }
