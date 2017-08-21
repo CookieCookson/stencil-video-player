@@ -1,4 +1,5 @@
 exports.config = {
+  generateCollection: true,
   bundles: [
     { components: [
       'video-player',
