@@ -6,7 +6,9 @@ exports.config = {
       'video-element',
       'play-button',
       'mute-button',
+      'fullscreen-button',
       'scrub-bar',
+      'volume-bar',
       'time-label'
     ] }
   ]

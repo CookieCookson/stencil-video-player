@@ -5,27 +5,23 @@ import { Component, Prop, Method, Event, EventEmitter } from '@stencil/core';
     styleUrl: 'video-element.scss'
 })
 export class VideoElement {
-
-    private video:any = document.querySelector('video');
+    @Prop() src: string;
 
     @Event() play: EventEmitter;
     @Event() pause: EventEmitter;
     @Event() timeupdate: EventEmitter;
     @Event() duration: EventEmitter;
 
+    private video:any = document.querySelector('video');
+
+
     componentDidLoad() {
         if (this.video) {
-            this.video.addEventListener('timeupdate', () => {
-                this.timeupdate.emit(this.video.currentTime);
-            });
-            if (this.video.duration) this.duration.emit(this.video.duration);
-            this.video.addEventListener('loadedmetadata', () => {
-                this.duration.emit(this.video.duration);
-            });
+            this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
+            if (this.video.duration) this.emitDuration();
+            this.video.addEventListener('loadedmetadata', () => this.emitDuration());
         }
     }
-
-    @Prop() src: string;
 
     @Method()
     playVideo() {
@@ -52,9 +48,22 @@ export class VideoElement {
         this.video.currentTime = this.video.duration * time;
     }
 
+    @Method()
+    setVolume(volume) {
+        this.video.volume = volume;
+    }
+
     handleClick() {
         if (this.video.paused) this.play.emit();
         else this.pause.emit();
+    }
+
+    emitDuration() {
+        this.duration.emit(this.video.duration);
+    }
+
+    emitCurrentTime() {
+        this.timeupdate.emit(this.video.currentTime);
     }
 
     render() {
