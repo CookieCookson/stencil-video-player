@@ -17,13 +17,13 @@ export class PlayButton {
     render() {
         if (this.playing) {
             return (
-                <button onClick={ () => this.handleClick()}>
+                <button onClick={() => this.handleClick()} aria-label='Pause'>
                     ⏸️
                 </button>
             );
         } else {
             return (
-                <button onClick={ () => this.handleClick()}>
+                <button onClick={() => this.handleClick()} aria-label='Play'>
                     ▶️
                 </button>
             );
