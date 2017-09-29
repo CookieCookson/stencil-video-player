@@ -6,13 +6,13 @@ import { Component, Prop, Event, EventEmitter, Element, Listen } from '@stencil/
 })
 export class VolumeBar {
     @Prop() level: number;
-    
+
     @Event() volume: EventEmitter;
     @Element() element: HTMLElement;
 
     private volumeElement: HTMLElement;
-    private isDown:boolean = false;
-    
+    private isDown: boolean = false;
+
     componentDidLoad() {
         this.volumeElement = this.element.querySelector('progress');
     }
@@ -64,7 +64,7 @@ export class VolumeBar {
             this.calculateVolume(event);
         }
     }
-    
+
     calculateVolume(event) {
         let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
         if (!clientX) return;

@@ -12,8 +12,8 @@ export class ScrubBar {
     @Element() element: HTMLElement;
 
     private scrubElement: HTMLElement;
-    private isDown:boolean = false;
-    
+    private isDown: boolean = false;
+
     componentDidLoad() {
         this.scrubElement = this.element.querySelector('progress');
     }
@@ -65,7 +65,7 @@ export class ScrubBar {
             this.calculateSeek(event);
         }
     }
-    
+
     calculateSeek(event) {
         let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
         if (!clientX) return;

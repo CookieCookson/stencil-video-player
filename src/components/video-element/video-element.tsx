@@ -15,7 +15,7 @@ export class VideoElement {
 
     @Element() element: HTMLElement;
 
-    private video:HTMLVideoElement;
+    private video: HTMLVideoElement;
 
     componentDidLoad() {
         this.video = this.element.querySelector('video');

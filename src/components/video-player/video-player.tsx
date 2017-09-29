@@ -74,7 +74,7 @@ export class VideoPlayer {
 
     @Listen('body:keyup')
     keyboardHandler(keyboardEvent) {
-        switch(keyboardEvent.code) {
+        switch (keyboardEvent.code) {
             case 'Space': {
                 keyboardEvent.preventDefault();
                 if (!this.isPlaying) this.playHandler();
