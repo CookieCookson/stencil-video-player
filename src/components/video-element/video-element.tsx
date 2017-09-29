@@ -51,7 +51,6 @@ export class VideoElement {
 
     @Method()
     setVolume(volume) {
-        console.log('set volume', volume);
         this.video.volume = volume;
     }
 
