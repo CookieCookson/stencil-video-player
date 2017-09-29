@@ -9,7 +9,8 @@ exports.config = {
       'fullscreen-button',
       'scrub-bar',
       'volume-bar',
-      'time-label'
+      'time-label',
+      'control-bar'
     ] }
   ]
 };

@@ -1,0 +1,20 @@
+control-bar {
+    display: block;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: opacity 0.5s;
+    transition-delay: 3s;
+    & > * {
+        float: left;
+        vertical-align: middle;
+    }
+    *:hover > & {
+        transition-delay: 0s;
+        opacity: 1 !important;
+    }
+}
