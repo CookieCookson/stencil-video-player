@@ -6,6 +6,7 @@ import { Component, Prop, Method, Element, Event, EventEmitter } from '@stencil/
 })
 export class VideoElement {
     @Prop() src: string;
+    @Prop() poster: string;
 
     @Event() play: EventEmitter;
     @Event() pause: EventEmitter;
@@ -50,10 +51,17 @@ export class VideoElement {
 
     @Method()
     setVolume(volume) {
+        console.log('set volume', volume);
         this.video.volume = volume;
     }
 
-    handleClick() {
+    @Method()
+    enterFullscreen() {
+        (this.video as any).webkitEnterFullscreen();
+    }
+
+    handleClick(event) {
+        event.preventDefault();
         if (this.video.paused) this.play.emit();
         else this.pause.emit();
     }
@@ -68,7 +76,7 @@ export class VideoElement {
 
     render() {
         return (
-            <video onClick={ () => this.handleClick() }>
+            <video poster={this.poster} onClick={($event) => this.handleClick($event)} playsInline webkit-playsinline>
                 <source src={this.src} />
             </video>
         );

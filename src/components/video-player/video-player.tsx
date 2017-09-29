@@ -6,6 +6,8 @@ import { Component, Prop, Listen, Element, State } from '@stencil/core';
 })
 export class VideoPlayer {
     @Prop() url: string;
+    @Prop() poster: string;
+
     @State() isFullscreen: boolean = false;
     @State() isPlaying: boolean = false;
     @State() isMuted: boolean = false;
@@ -16,6 +18,8 @@ export class VideoPlayer {
     @Element() element: HTMLElement;
 
     private videoElement: any;
+
+    private isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 ? true: false;
 
     componentDidLoad() {
         this.videoElement = this.element.querySelector('video-element');
@@ -93,7 +97,8 @@ export class VideoPlayer {
 
     @Listen('enterFullscreen')
     enterFullscreen() {
-        this.element.webkitRequestFullscreen();
+        if (!this.isSafari) this.element.webkitRequestFullscreen();
+        else this.videoElement.enterFullscreen();
     }
 
     @Listen('exitFullscreen')
@@ -107,15 +112,21 @@ export class VideoPlayer {
     }
 
     render() {
+        let audioControls = null;
+        if (!this.isSafari) {
+            audioControls = [
+                <mute-button muted={this.isMuted}></mute-button>,
+                <volume-bar level={this.volume}></volume-bar>
+            ];
+        }
         return ([
-            <video-element src={this.url}></video-element>,
+            <video-element src={this.url} poster={this.poster}></video-element>,
             <control-bar visible={!this.isPlaying}>
                 <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>
                 <time-label time={this.progress}></time-label>
                 <time-label time={this.duration}></time-label>
-                <mute-button muted={this.isMuted}></mute-button>
-                <volume-bar level={this.volume}></volume-bar>
+                {audioControls}
                 <fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button>
             </control-bar>
         ]);

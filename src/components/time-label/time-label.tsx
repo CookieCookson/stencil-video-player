@@ -34,10 +34,10 @@ export class TimeLabel {
         return ([
             <span>{this.hours[0]}</span>,
             <span>{this.hours[1]}</span>,
-            <span>:</span>,
+            <span class='divider'>:</span>,
             <span>{this.minutes[0]}</span>,
             <span>{this.minutes[1]}</span>,
-            <span>:</span>,
+            <span class='divider'>:</span>,
             <span>{this.seconds[0]}</span>,
             <span>{this.seconds[1]}</span>
         ]);
