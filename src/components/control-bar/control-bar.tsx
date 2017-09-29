@@ -9,7 +9,6 @@ export class ControlBar {
     @Element() element: HTMLElement;
 
     componentDidLoad() {
-        console.log('yolo');
         this.element.style.opacity = '1';
     }
 
