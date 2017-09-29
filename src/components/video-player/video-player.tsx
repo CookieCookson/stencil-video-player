@@ -19,7 +19,7 @@ export class VideoPlayer {
 
     private videoElement: any;
 
-    private isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 ? true: false;
+    private isSafari = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? true : false;
 
     componentDidLoad() {
         this.videoElement = this.element.querySelector('video-element');
