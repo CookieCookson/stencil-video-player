@@ -8,13 +8,11 @@ control-bar {
     right: 0;
     opacity: 0;
     transition: opacity 0.5s;
-    transition-delay: 3s;
     & > * {
         float: left;
         vertical-align: middle;
     }
     *:hover > & {
-        transition-delay: 0s;
         opacity: 1 !important;
     }
 }

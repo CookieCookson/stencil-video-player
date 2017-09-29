@@ -1,4 +1,4 @@
-import { Component, Prop, Method, Event, EventEmitter } from '@stencil/core';
+import { Component, Prop, Method, Element, Event, EventEmitter } from '@stencil/core';
 
 @Component({
     tag: 'video-element',
@@ -12,15 +12,15 @@ export class VideoElement {
     @Event() timeupdate: EventEmitter;
     @Event() duration: EventEmitter;
 
-    private video:any = document.querySelector('video');
+    @Element() element: HTMLElement;
 
+    private video:HTMLVideoElement;
 
     componentDidLoad() {
-        if (this.video) {
-            this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
-            if (this.video.duration) this.emitDuration();
-            this.video.addEventListener('loadedmetadata', () => this.emitDuration());
-        }
+        this.video = this.element.querySelector('video');
+        this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
+        if (this.video.duration) this.emitDuration();
+        this.video.addEventListener('loadedmetadata', () => this.emitDuration());
     }
 
     @Method()

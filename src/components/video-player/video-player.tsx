@@ -17,7 +17,7 @@ export class VideoPlayer {
 
     private videoElement: any;
 
-    componentWillLoad() {
+    componentDidLoad() {
         this.videoElement = this.element.querySelector('video-element');
     }
 
@@ -110,7 +110,7 @@ export class VideoPlayer {
         return ([
             <video-element src={this.url}></video-element>,
             <control-bar visible={!this.isPlaying}>
-                <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>,
+                <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>
                 <time-label time={this.progress}></time-label>
                 <time-label time={this.duration}></time-label>
