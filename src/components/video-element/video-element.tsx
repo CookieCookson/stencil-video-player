@@ -45,8 +45,8 @@ export class VideoElement {
     }
 
     @Method()
-    seekTo(time) {
-        this.video.currentTime = this.video.duration * time;
+    seekTo(newTime) {
+        this.video.currentTime = newTime;
     }
 
     @Method()
