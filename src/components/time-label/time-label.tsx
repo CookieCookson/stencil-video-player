@@ -31,15 +31,25 @@ export class TimeLabel {
     }
 
     render() {
-        return ([
-            <span>{this.hours[0]}</span>,
-            <span>{this.hours[1]}</span>,
-            <span class='divider'>:</span>,
-            <span>{this.minutes[0]}</span>,
-            <span>{this.minutes[1]}</span>,
-            <span class='divider'>:</span>,
-            <span>{this.seconds[0]}</span>,
-            <span>{this.seconds[1]}</span>
-        ]);
+        if (this.hours !== '00') {
+            return ([
+                <span>{this.hours[0]}</span>,
+                <span>{this.hours[1]}</span>,
+                <span class='divider'>:</span>,
+                <span>{this.minutes[0]}</span>,
+                <span>{this.minutes[1]}</span>,
+                <span class='divider'>:</span>,
+                <span>{this.seconds[0]}</span>,
+                <span>{this.seconds[1]}</span>
+            ]);
+        } else {
+            return ([
+                <span>{this.minutes[0]}</span>,
+                <span>{this.minutes[1]}</span>,
+                <span class='divider'>:</span>,
+                <span>{this.seconds[0]}</span>,
+                <span>{this.seconds[1]}</span>
+            ]);
+        }
     }
 }
