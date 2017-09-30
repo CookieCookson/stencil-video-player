@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, Element, Listen } from '@stencil/core';
+import { Component, Prop, PropDidChange, Event, EventEmitter, Element, Listen } from '@stencil/core';
 
 @Component({
     tag: 'volume-bar',
@@ -12,6 +12,7 @@ export class VolumeBar {
 
     private volumeElement: HTMLElement;
     private isDown: boolean = false;
+    private valuetext = '100% volume';
 
     componentDidLoad() {
         this.volumeElement = this.element.querySelector('progress');
@@ -74,12 +75,55 @@ export class VolumeBar {
         if (percent < 0) percent = 0;
         this.volume.emit(percent);
     }
+    
+    @Listen('keyup')
+    keyboardHandler(keyboardEvent: KeyboardEvent) {
+        let preventDefault = true;
+        switch (keyboardEvent.code) {
+            case 'ArrowLeft': {
+                this.arrowLeftHandler();
+                break;
+            }
+            case 'ArrowRight': {
+                this.arrowRightHandler();
+                break;
+            }
+            default: {
+                // If no keyboard event is to be handled, do not prevent default
+                preventDefault = false;
+            }
+        }
+        if (preventDefault) keyboardEvent.preventDefault();
+    }
+
+    arrowLeftHandler() {
+        let newVolume = this.level - 0.05; // reduce volume by 5%
+        if (newVolume < 0) newVolume = 0
+        this.volume.emit(newVolume);
+    }
+
+    arrowRightHandler() {
+        let newVolume = this.level + 0.05; // increase volume by 5%
+        if (newVolume > 1) newVolume = 1;
+        this.volume.emit(newVolume);
+    }
+
+    @PropDidChange('level')
+    onLevelChange() {
+        this.valuetext = (this.level * 100).toFixed(0) + '% volume';
+    }
 
     render() {
         return (
             <progress
                 max='1'
                 value={this.level}
+                tabindex='0'
+                role='slider'
+                aria-valuemin='0'
+                aria-valuemax='100'
+                aria-valuenow={((this.level * 100).toFixed(0))}
+                aria-valuetext={this.valuetext}
             ></progress>
         );
     }
