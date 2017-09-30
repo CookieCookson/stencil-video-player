@@ -49,6 +49,11 @@ export class VideoPlayer {
         this.videoElement.pauseVideo();
     }
 
+    @Listen('ended')
+    endedHandler() {
+        this.isPlaying = false;
+    }
+
     /**
      * Manages player metadata state
      */

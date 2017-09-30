@@ -12,6 +12,7 @@ export class VideoElement {
     @Event() pause: EventEmitter;
     @Event() timeupdate: EventEmitter;
     @Event() duration: EventEmitter;
+    @Event() ended: EventEmitter;
 
     @Element() element: HTMLElement;
 
@@ -22,6 +23,7 @@ export class VideoElement {
         this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
         if (this.video.duration) this.emitDuration();
         this.video.addEventListener('loadedmetadata', () => this.emitDuration());
+        this.video.addEventListener('ended', () => this.emitEnded())
     }
 
     @Method()
@@ -73,9 +75,17 @@ export class VideoElement {
         this.timeupdate.emit(this.video.currentTime);
     }
 
+    emitEnded() {
+        this.ended.emit();
+    }
+
     render() {
         return (
-            <video poster={this.poster} onClick={($event) => this.handleClick($event)} playsInline webkit-playsinline>
+            <video
+                poster={this.poster}
+                onClick={($event) => this.handleClick($event)}
+                playsInline
+                webkit-playsinline>
                 <source src={this.src} />
             </video>
         );
