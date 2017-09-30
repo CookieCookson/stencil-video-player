@@ -8,7 +8,10 @@ export class ScrubBar {
     @Prop() progress: number;
     @Prop() duration: number;
 
-    @Event() seek: EventEmitter;
+    @Event() seekStart: EventEmitter;
+    @Event() seekMove: EventEmitter;
+    @Event() seekEnd: EventEmitter;
+
     @Element() element: HTMLElement;
 
     private scrubElement: HTMLElement;
@@ -50,30 +53,30 @@ export class ScrubBar {
 
     handleDown(event) {
         this.isDown = true;
-        this.calculateSeek(event);
+        this.calculateSeek(event, this.seekStart);
     }
 
     handleMove(event) {
         if (this.isDown) {
-            this.calculateSeek(event);
+            this.calculateSeek(event, this.seekMove);
         }
     }
 
     handleUp(event) {
         if (this.isDown) {
             this.isDown = false;
-            this.calculateSeek(event);
+            this.calculateSeek(event, this.seekEnd);
         }
     }
 
-    calculateSeek(event) {
+    calculateSeek(event, emitter) {
         let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
         if (!clientX) return;
         let controlPosition = this.scrubElement.getBoundingClientRect().left;
         let percent = (clientX - controlPosition) / this.scrubElement.offsetWidth;
         if (percent > 1) percent = 1;
         if (percent < 0) percent = 0;
-        this.seek.emit(percent);
+        emitter.emit(percent);
     }
 
     render() {

@@ -21,6 +21,8 @@ export class VideoPlayer {
 
     private isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 ? true: false;
 
+    private wasPlaying: boolean; // maintains play state whilst scrubbing
+
     componentDidLoad() {
         this.videoElement = this.element.querySelector('video-element');
     }
@@ -59,9 +61,22 @@ export class VideoPlayer {
         this.duration = event.detail;
     }
 
-    @Listen('seek')
-    seekHandler(event) {
+    @Listen('seekStart')
+    seekStartHandler(event) {
         this.videoElement.seekTo(event.detail);
+        this.wasPlaying = this.isPlaying;
+        if (this.wasPlaying) this.pauseHandler();
+    }
+
+    @Listen('seekMove')
+    seekMoveHandler(event) {
+        this.videoElement.seekTo(event.detail);
+    }
+
+    @Listen('seekEnd')
+    seekEndHandler(event) {
+        this.videoElement.seekTo(event.detail);
+        if (this.wasPlaying) this.playHandler();
     }
 
     @Listen('volume')
