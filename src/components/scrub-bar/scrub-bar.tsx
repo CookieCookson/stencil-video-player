@@ -60,6 +60,11 @@ export class ScrubBar {
         this.handleMove(event);
     }
 
+    @Listen('mouseleave')
+    mouseleaveHandler() {
+        this.handleLeave();
+    }
+
     handleDown(event) {
         this.isDown = true;
         this.scrubToPosition(event, this.seekStart);
@@ -78,6 +83,10 @@ export class ScrubBar {
 
     handleMove(event) {
         if (this.thumbnails) this.showThumbnail(event);
+    }
+
+    handleLeave() {
+        if (this.thumbnails) this.hideThumbnail();
     }
 
     scrubToPosition(event, emitter) {
@@ -105,7 +114,7 @@ export class ScrubBar {
         const newTime = this.duration * percent;
         return newTime;
     }
-    
+
     @Listen('keyup')
     keyboardHandler(keyboardEvent: KeyboardEvent) {
         let preventDefault = true;
@@ -137,7 +146,7 @@ export class ScrubBar {
         if (newTime > this.duration) newTime = this.duration;
         this.seekEnd.emit(newTime);
     }
-    
+
     @PropDidChange('progress')
     onProgressChangeHandler() {
         this.setValueText();
@@ -177,7 +186,7 @@ export class ScrubBar {
         }
         // Return combined text string
         return (hours !== '00' ? hours + ':' : '') + minutes + ':' + seconds;
-    };
+    }
 
     showThumbnail(event) {
         let position = this.calculateSeek(event);
@@ -186,17 +195,29 @@ export class ScrubBar {
         for (cueIndex = 0; cueIndex < cues.length; cueIndex++) {
             if (cues[cueIndex].startTime <= position && cues[cueIndex].endTime > position) break;
         }
-        const url = cues[cueIndex].text.split('#')[0];
-        const xywh = cues[cueIndex].text.substr(cues[cueIndex].text.indexOf('=')+1).split(',');
+        if (cues[cueIndex]) {
+            const url = cues[cueIndex].text.split('#')[0];
+            const xywh = cues[cueIndex].text.substr(cues[cueIndex].text.indexOf('=') + 1).split(',');
 
-        this.thumbnailOptions = {
-            url: url,
-            x: xywh[0] + 'px',
-            y: xywh[1] + 'px',
-            w: xywh[2] + 'px',
-            h: xywh[3] + 'px',
-            position: position / this.duration * 100
+            let newPos = position / this.duration * this.element.clientWidth;
+            let lower = parseInt(xywh[2]) / 2;
+            let upper = this.element.clientWidth - lower;
+            if (newPos < lower) newPos = lower;
+            if (newPos > upper) newPos = upper;
+
+            this.thumbnailOptions = {
+                url: url,
+                x: xywh[0],
+                y: xywh[1],
+                w: xywh[2],
+                h: xywh[3],
+                position: newPos
+            };
         }
+    }
+
+    hideThumbnail() {
+        this.thumbnailOptions = null;
     }
 
     render() {
@@ -213,8 +234,7 @@ export class ScrubBar {
                 aria-valuetext={this.valuetext}
             ></progress>
         ];
-        if (this.thumbnails) objects.unshift(<thumbnail-preview options={this.thumbnailOptions}></thumbnail-preview>);
-   
+        if (this.thumbnails && this.thumbnailOptions) objects.unshift(<thumbnail-preview options={this.thumbnailOptions}></thumbnail-preview>);
         return objects;
     }
 }

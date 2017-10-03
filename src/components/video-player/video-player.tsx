@@ -7,7 +7,7 @@ import { Component, Prop, Listen, Element, State } from '@stencil/core';
 export class VideoPlayer {
     // Browser conditions
     private isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 ? true: false;
-    
+
     // Props to configure the player options
     @Prop() url: string;
     @Prop() poster: string;
@@ -21,7 +21,7 @@ export class VideoPlayer {
     @State() duration: number = 1;
     @State() volume: number = 1;
     @State() userFocus: boolean = true;
-    @State() thumbnailsTrack;
+    @State() thumbnailsTrack: TextTrack = null;
 
     // DOM elements
     @Element() element: HTMLElement;
@@ -67,7 +67,7 @@ export class VideoPlayer {
 
     @Listen('thumbnailsTrack')
     thumbnailsTrackHandler(event) {
-        this.thumbnailsTrack = event.detail; 
+        this.thumbnailsTrack = event.detail;
     }
 
     /**
@@ -91,7 +91,7 @@ export class VideoPlayer {
         this.videoElement.seekTo(event.detail);
         if (this.wasPlaying) this.playHandler();
     }
-    
+
     @Listen('timeupdate')
     timeupdateHandler(event) {
         this.progress = event.detail;
@@ -108,7 +108,7 @@ export class VideoPlayer {
         else this.isMuted = false;
         this.videoElement.setVolume(event.detail);
     }
-    
+
     @Listen('mute')
     muteHandler() {
         this.isMuted = true;
@@ -147,7 +147,7 @@ export class VideoPlayer {
     @Listen('mousemove')
     mousemoveHandler() {
         this.userFocus = true;
-        clearTimeout(this.userFocusTimeout)
+        clearTimeout(this.userFocusTimeout);
         this.userFocusTimeout = setTimeout(() => {
             this.userFocus = false;
         }, 3000);
@@ -157,7 +157,7 @@ export class VideoPlayer {
     mouseoutHandler() {
         this.userFocus = false;
     }
-    
+
     /**
      * Manages global keyboard controls for the player
      */

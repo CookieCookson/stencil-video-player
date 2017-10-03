@@ -25,7 +25,7 @@ export class VideoElement {
         this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
         if (this.video.duration) this.emitDuration();
         this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
-        this.video.addEventListener('ended', () => this.emitEnded())
+        this.video.addEventListener('ended', () => this.emitEnded());
     }
 
     @Method()
@@ -80,7 +80,7 @@ export class VideoElement {
 
     emitTextTracks() {
         for (let i = 0; i < this.video.textTracks.length; i++) {
-            if (this.video.textTracks[i].label == 'thumbnails') this.thumbnailsTrack.emit(this.video.textTracks[i]);
+            if (this.video.textTracks[i].label === 'thumbnails') this.thumbnailsTrack.emit(this.video.textTracks[i]);
         }
     }
 
