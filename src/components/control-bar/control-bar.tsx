@@ -14,7 +14,7 @@ export class ControlBar {
 
     @PropDidChange('visible')
     visibilityHandler(isVisible) {
-        this.element.style.opacity = isVisible ? '1': '0';
+        this.element.style.opacity = isVisible ? '1' : '0';
     }
 
     render() {
