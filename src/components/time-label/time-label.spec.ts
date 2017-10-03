@@ -19,7 +19,7 @@ describe('time-label', () => {
       expect(element.textContent).toEqual('00:00');
     });
 
-    it('should work a time set', async () => {
+    it('should work with a time set', async () => {
       element.time = 1;
       await flush(element);
       expect(element.textContent).toEqual('00:01');
