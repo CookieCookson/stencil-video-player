@@ -200,6 +200,7 @@ export class VideoPlayer {
                 <play-button playing={this.isPlaying}></play-button>
                 <time-label time={this.progress}></time-label>
                 <time-label time={this.duration}></time-label>
+                <time-label></time-label>
                 {audioControls}
                 <fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button>
             </control-bar>

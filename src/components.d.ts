@@ -4,7 +4,7 @@
  * and imports for stencil collections that might be configured in your stencil.config.js file
  */
 
-import { ControlBar as ControlBar } from './components\control-bar\control-bar';
+import { ControlBar as ControlBar } from './components/control-bar/control-bar';
 
 interface HTMLControlBarElement extends ControlBar, HTMLElement {
 }
@@ -32,7 +32,7 @@ declare global {
   }
 }
 
-import { FullscreenButton as FullscreenButton } from './components\fullscreen-button\fullscreen-button';
+import { FullscreenButton as FullscreenButton } from './components/fullscreen-button/fullscreen-button';
 
 interface HTMLFullscreenButtonElement extends FullscreenButton, HTMLElement {
 }
@@ -60,7 +60,7 @@ declare global {
   }
 }
 
-import { MuteButton as MuteButton } from './components\mute-button\mute-button';
+import { MuteButton as MuteButton } from './components/mute-button/mute-button';
 
 interface HTMLMuteButtonElement extends MuteButton, HTMLElement {
 }
@@ -88,7 +88,7 @@ declare global {
   }
 }
 
-import { PlayButton as PlayButton } from './components\play-button\play-button';
+import { PlayButton as PlayButton } from './components/play-button/play-button';
 
 interface HTMLPlayButtonElement extends PlayButton, HTMLElement {
 }
@@ -116,7 +116,7 @@ declare global {
   }
 }
 
-import { ScrubBar as ScrubBar } from './components\scrub-bar\scrub-bar';
+import { ScrubBar as ScrubBar } from './components/scrub-bar/scrub-bar';
 
 interface HTMLScrubBarElement extends ScrubBar, HTMLElement {
 }
@@ -146,7 +146,7 @@ declare global {
   }
 }
 
-import { ThumbnailPreview as ThumbnailPreview } from './components\thumbnail-preview\thumbnail-preview';
+import { ThumbnailPreview as ThumbnailPreview } from './components/thumbnail-preview/thumbnail-preview';
 
 interface HTMLThumbnailPreviewElement extends ThumbnailPreview, HTMLElement {
 }
@@ -174,7 +174,7 @@ declare global {
   }
 }
 
-import { TimeLabel as TimeLabel } from './components\time-label\time-label';
+import { TimeLabel as TimeLabel } from './components/time-label/time-label';
 
 interface HTMLTimeLabelElement extends TimeLabel, HTMLElement {
 }
@@ -202,7 +202,7 @@ declare global {
   }
 }
 
-import { VideoElement as VideoElement } from './components\video-element\video-element';
+import { VideoElement as VideoElement } from './components/video-element/video-element';
 
 interface HTMLVideoElementElement extends VideoElement, HTMLElement {
 }
@@ -239,7 +239,7 @@ declare global {
   }
 }
 
-import { VideoPlayer as VideoPlayer } from './components\video-player\video-player';
+import { VideoPlayer as VideoPlayer } from './components/video-player/video-player';
 
 interface HTMLVideoPlayerElement extends VideoPlayer, HTMLElement {
 }
@@ -269,7 +269,7 @@ declare global {
   }
 }
 
-import { VolumeBar as VolumeBar } from './components\volume-bar\volume-bar';
+import { VolumeBar as VolumeBar } from './components/volume-bar/volume-bar';
 
 interface HTMLVolumeBarElement extends VolumeBar, HTMLElement {
 }

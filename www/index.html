@@ -31,5 +31,17 @@
     <video-player url="sintel.mp4" poster="sintel.jpg" thumbs="sintel-thumbs.vtt"></video-player>
   </div>
 
+
+  <script>
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      // auto-unregister service worker during dev mode
+      navigator.serviceWorker.ready.then(registration => {
+        registration.unregister().then(() => {
+          location.reload(true);
+        });
+      });
+    }
+  </script>
+
 </body>
 </html>

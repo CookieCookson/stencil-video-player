@@ -1,0 +1,143 @@
+/*! Built with http://stenciljs.com */
+control-bar {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 10px;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+control-bar > * {
+  float: left;
+  vertical-align: middle;
+}
+
+control-bar:hover {
+  opacity: 1 !important;
+}
+
+fullscreen-button button {
+  padding: 0;
+}
+
+mute-button button {
+  padding: 0;
+}
+
+play-button button {
+  padding: 0;
+}
+
+scrub-bar progress {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 10px;
+  background-color: black;
+}
+
+thumbnail-preview {
+  display: block;
+  width: 160px;
+  height: 68px;
+  bottom: 0px;
+  position: absolute;
+  pointer-events: none;
+}
+
+time-label {
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  margin: 0 5px;
+  padding: 14px 0;
+  height: 30px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+time-label span {
+  display: inline-block;
+  width: 7px;
+  text-align: center;
+  color: #fff;
+}
+
+time-label span.divider {
+  width: 3px;
+}
+
+video-element {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+video-element video {
+  background: black;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+video-player {
+  display: block;
+  position: relative;
+}
+
+video-player scrub-bar {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+
+video-player button {
+  -webkit-appearance: none;
+  border: transparent;
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+video-player volume-bar {
+  width: 100px;
+}
+
+video-player fullscreen-button {
+  float: right;
+}
+
+video-player:-webkit-full-screen {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+volume-bar progress {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin-top: 10px;
+  background-color: black;
+}
+
+control-bar.💎,
+fullscreen-button.💎,
+mute-button.💎,
+play-button.💎,
+scrub-bar.💎,
+thumbnail-preview.💎,
+time-label.💎,
+video-element.💎,
+video-player.💎,
+volume-bar.💎 {
+  visibility: inherit;
+}

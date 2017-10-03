@@ -12,22 +12,16 @@ export class TimeLabel {
     @Prop() time: number;
 
     @PropDidChange('time')
-    didChangeHandler(currentTimeInSeconds: number) {
-        let h = Math.floor(currentTimeInSeconds / 3600);
-        let m, s;
-        if (h > 0) {
-            m = Math.floor((currentTimeInSeconds - (h / 3600)) / 60);
-            s = currentTimeInSeconds - (h * 3600) - (m * 60);
-        } else {
-            m = Math.floor(currentTimeInSeconds / 60);
-            s = currentTimeInSeconds - (m * 60);
-        }
-        if (h < 10) this.hours = '0' + h;
-        else this.hours = String(h);
-        if (m < 10) this.minutes = '0' + m;
-        else this.minutes = String(m);
-        if (s < 10) this.seconds = '0' + s;
-        else this.seconds = String(s);
+    didChangeHandler(time: number) {
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = time % 60;
+        if (hours < 10) this.hours = '0' + hours;
+        else this.hours = String(hours);
+        if (minutes < 10) this.minutes = '0' + minutes;
+        else this.minutes = String(minutes);
+        if (seconds < 10) this.seconds = '0' + seconds;
+        else this.seconds = String(seconds);
     }
 
     render() {
