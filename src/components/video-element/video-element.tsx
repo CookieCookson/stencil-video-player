@@ -7,12 +7,14 @@ import { Component, Prop, Method, Element, Event, EventEmitter } from '@stencil/
 export class VideoElement {
     @Prop() src: string;
     @Prop() poster: string;
+    @Prop() thumbs: string;
 
     @Event() play: EventEmitter;
     @Event() pause: EventEmitter;
     @Event() timeupdate: EventEmitter;
     @Event() duration: EventEmitter;
     @Event() ended: EventEmitter;
+    @Event() thumbnailsTrack: EventEmitter;
 
     @Element() element: HTMLElement;
 
@@ -22,7 +24,7 @@ export class VideoElement {
         this.video = this.element.querySelector('video');
         this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
         if (this.video.duration) this.emitDuration();
-        this.video.addEventListener('loadedmetadata', () => this.emitDuration());
+        this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
         this.video.addEventListener('ended', () => this.emitEnded())
     }
 
@@ -67,8 +69,19 @@ export class VideoElement {
         else this.pause.emit();
     }
 
+    emitMetadata() {
+        this.emitDuration();
+        if (this.video.textTracks) this.emitTextTracks();
+    }
+
     emitDuration() {
         this.duration.emit(this.video.duration);
+    }
+
+    emitTextTracks() {
+        for (let i = 0; i < this.video.textTracks.length; i++) {
+            if (this.video.textTracks[i].label == 'thumbnails') this.thumbnailsTrack.emit(this.video.textTracks[i]);
+        }
     }
 
     emitCurrentTime() {
@@ -80,6 +93,8 @@ export class VideoElement {
     }
 
     render() {
+        let thumbsTrack = null;
+        if (this.thumbs) thumbsTrack = <track src={this.thumbs} kind='metadata' label='thumbnails' default />;
         return (
             <video
                 poster={this.poster}
@@ -87,6 +102,7 @@ export class VideoElement {
                 playsInline
                 webkit-playsinline>
                 <source src={this.src} />
+                {thumbsTrack}
             </video>
         );
     }

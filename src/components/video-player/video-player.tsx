@@ -11,6 +11,7 @@ export class VideoPlayer {
     // Props to configure the player options
     @Prop() url: string;
     @Prop() poster: string;
+    @Prop() thumbs: string;
 
     // Player state
     @State() isFullscreen: boolean = false;
@@ -20,6 +21,7 @@ export class VideoPlayer {
     @State() duration: number = 1;
     @State() volume: number = 1;
     @State() userFocus: boolean = true;
+    @State() thumbnailsTrack;
 
     // DOM elements
     @Element() element: HTMLElement;
@@ -61,6 +63,11 @@ export class VideoPlayer {
     @Listen('duration')
     durationHandler(event) {
         this.duration = event.detail;
+    }
+
+    @Listen('thumbnailsTrack')
+    thumbnailsTrackHandler(event) {
+        this.thumbnailsTrack = event.detail; 
     }
 
     /**
@@ -187,9 +194,9 @@ export class VideoPlayer {
             ];
         }
         return ([
-            <video-element src={this.url} poster={this.poster}></video-element>,
+            <video-element src={this.url} poster={this.poster} thumbs={this.thumbs}></video-element>,
             <control-bar visible={!this.isPlaying || this.userFocus}>
-                <scrub-bar progress={this.progress} duration={this.duration}></scrub-bar>
+                <scrub-bar progress={this.progress} duration={this.duration} thumbnails={this.thumbnailsTrack}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>
                 <time-label time={this.progress}></time-label>
                 <time-label time={this.duration}></time-label>

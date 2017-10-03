@@ -10,7 +10,8 @@ exports.config = {
       'scrub-bar',
       'volume-bar',
       'time-label',
-      'control-bar'
+      'control-bar',
+      'thumbnail-preview'
     ] }
   ]
 };

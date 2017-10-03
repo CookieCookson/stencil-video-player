@@ -7,6 +7,7 @@ import { Component, Prop, PropDidChange, Event, EventEmitter, Element, Listen, S
 export class ScrubBar {
     @Prop() progress: number;
     @Prop() duration: number;
+    @Prop() thumbnails: TextTrack;
 
     @Event() seekStart: EventEmitter;
     @Event() seekMove: EventEmitter;
@@ -17,7 +18,8 @@ export class ScrubBar {
     private scrubElement: HTMLElement;
     private isDown: boolean = false;
 
-    @State() valuetext = '0:00 of 0:00';
+    @State() valuetext: string = '0:00 of 0:00';
+    @State() thumbnailOptions: any;
 
     componentDidLoad() {
         this.scrubElement = this.element.querySelector('progress');
@@ -34,44 +36,51 @@ export class ScrubBar {
     }
 
     @Listen('body:touchmove')
-    touchmoveHandler(event) {
-        this.handleMove(event);
+    bodytouchmoveHandler(event) {
+        this.handleBodyMove(event);
     }
 
     @Listen('body:mousemove')
-    mousemoveHandler(event) {
-        this.handleMove(event);
+    bodymousemoveHandler(event) {
+        this.handleBodyMove(event);
     }
 
     @Listen('body:touchend')
-    touchendHandler(event) {
+    bodytouchendHandler(event) {
         this.handleUp(event);
     }
 
     @Listen('body:mouseup')
-    mouseupHandler(event) {
+    bodymouseupHandler(event) {
         this.handleUp(event);
+    }
+
+    @Listen('mousemove')
+    mousemoveHandler(event) {
+        this.handleMove(event);
     }
 
     handleDown(event) {
         this.isDown = true;
-        this.calculateSeek(event, this.seekStart);
+        this.scrubToPosition(event, this.seekStart);
     }
 
-    handleMove(event) {
-        if (this.isDown) {
-            this.calculateSeek(event, this.seekMove);
-        }
+    handleBodyMove(event) {
+        if (this.isDown) this.scrubToPosition(event, this.seekMove);
     }
 
     handleUp(event) {
         if (this.isDown) {
             this.isDown = false;
-            this.calculateSeek(event, this.seekEnd);
+            this.scrubToPosition(event, this.seekEnd);
         }
     }
 
-    calculateSeek(event, emitter) {
+    handleMove(event) {
+        if (this.thumbnails) this.showThumbnail(event);
+    }
+
+    scrubToPosition(event, emitter) {
         // Find scrub position as a percentage
         let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
         if (!clientX) return;
@@ -82,6 +91,19 @@ export class ScrubBar {
         // Convert percentage into time
         const newTime = this.duration * percent;
         emitter.emit(newTime);
+    }
+
+    calculateSeek(event) {
+        // Find scrub position as a percentage
+        let clientX = event.touches && event.touches[0] ? event.touches[0].clientX : event.clientX;
+        if (!clientX) return;
+        let controlPosition = this.scrubElement.getBoundingClientRect().left;
+        let percent = (clientX - controlPosition) / this.scrubElement.offsetWidth;
+        if (percent > 1) percent = 1;
+        if (percent < 0) percent = 0;
+        // Convert percentage into time
+        const newTime = this.duration * percent;
+        return newTime;
     }
     
     @Listen('keyup')
@@ -157,8 +179,28 @@ export class ScrubBar {
         return (hours !== '00' ? hours + ':' : '') + minutes + ':' + seconds;
     };
 
+    showThumbnail(event) {
+        let position = this.calculateSeek(event);
+        const cues = this.thumbnails.cues;
+        let cueIndex = 0;
+        for (cueIndex = 0; cueIndex < cues.length; cueIndex++) {
+            if (cues[cueIndex].startTime <= position && cues[cueIndex].endTime > position) break;
+        }
+        const url = cues[cueIndex].text.split('#')[0];
+        const xywh = cues[cueIndex].text.substr(cues[cueIndex].text.indexOf('=')+1).split(',');
+
+        this.thumbnailOptions = {
+            url: url,
+            x: xywh[0] + 'px',
+            y: xywh[1] + 'px',
+            w: xywh[2] + 'px',
+            h: xywh[3] + 'px',
+            position: position / this.duration * 100
+        }
+    }
+
     render() {
-        return (
+        let objects = [
             <progress
                 max={this.duration}
                 value={this.progress || 0}
@@ -170,6 +212,9 @@ export class ScrubBar {
                 aria-valuenow={this.progress}
                 aria-valuetext={this.valuetext}
             ></progress>
-        );
+        ];
+        if (this.thumbnails) objects.unshift(<thumbnail-preview options={this.thumbnailOptions}></thumbnail-preview>);
+   
+        return objects;
     }
 }
