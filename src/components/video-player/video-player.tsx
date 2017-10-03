@@ -162,7 +162,7 @@ export class VideoPlayer {
      * Manages global keyboard controls for the player
      */
 
-    @Listen('body:keyup')
+    @Listen('keyup')
     keyboardHandler(keyboardEvent) {
         switch (keyboardEvent.code) {
             case 'Space': {
