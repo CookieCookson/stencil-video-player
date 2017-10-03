@@ -138,13 +138,13 @@ export class ScrubBar {
     arrowLeftHandler() {
         let newTime = this.progress - 5; // go back 5 seconds
         if (newTime < 0.001) newTime = 0.001;
-        this.seekEnd.emit(newTime);
+        this.seekMove.emit(newTime);
     }
 
     arrowRightHandler() {
         let newTime = this.progress + 5; // go forwards 5 seconds
         if (newTime > this.duration) newTime = this.duration;
-        this.seekEnd.emit(newTime);
+        this.seekMove.emit(newTime);
     }
 
     @PropDidChange('progress')
