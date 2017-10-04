@@ -237,6 +237,10 @@
           "playHandler"
         ],
         [
+          "playing",
+          "playingHandler"
+        ],
+        [
           "seekEnd",
           "seekEndHandler"
         ],

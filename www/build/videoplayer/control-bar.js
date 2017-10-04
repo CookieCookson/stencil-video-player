@@ -353,7 +353,10 @@ var VideoElement = /** @class */ (function () {
         if (this.video.duration)
             this.emitDuration();
         this.video.addEventListener('loadedmetadata', function () { return _this.emitMetadata(); });
+        this.video.addEventListener('durationchange', function () { return _this.emitDuration(); });
         this.video.addEventListener('ended', function () { return _this.emitEnded(); });
+        this.video.addEventListener('playing', function () { return _this.emitPlaying(); });
+        this.video.addEventListener('pause', function () { return _this.emitPaused(); });
     };
     VideoElement.prototype.playVideo = function () {
         this.video.play();
@@ -384,7 +387,6 @@ var VideoElement = /** @class */ (function () {
             this.pause.emit();
     };
     VideoElement.prototype.emitMetadata = function () {
-        this.emitDuration();
         if (this.video.textTracks)
             this.emitTextTracks();
     };
@@ -402,6 +404,12 @@ var VideoElement = /** @class */ (function () {
     };
     VideoElement.prototype.emitEnded = function () {
         this.ended.emit();
+    };
+    VideoElement.prototype.emitPlaying = function () {
+        this.playing.emit(true);
+    };
+    VideoElement.prototype.emitPaused = function () {
+        this.playing.emit(false);
     };
     VideoElement.prototype.render = function () {
         var _this = this;
@@ -436,8 +444,10 @@ var VideoPlayer = /** @class */ (function () {
      * Manages playback state
      */
     VideoPlayer.prototype.playHandler = function () {
-        this.isPlaying = true;
         this.videoElement.playVideo();
+    };
+    VideoPlayer.prototype.playingHandler = function (event) {
+        this.isPlaying = event.detail;
     };
     VideoPlayer.prototype.pauseHandler = function () {
         this.isPlaying = false;
@@ -568,7 +578,6 @@ var VideoPlayer = /** @class */ (function () {
                 h("play-button", { "p": { "playing": this.isPlaying } }),
                 h("time-label", { "p": { "time": this.progress } }),
                 h("time-label", { "p": { "time": this.duration } }),
-                h("time-label", 0),
                 audioControls,
                 h("fullscreen-button", { "p": { "fullscreen": this.isFullscreen } }))
         ]);
@@ -955,6 +964,10 @@ exports['VOLUME-BAR'] = VolumeBar;
   [
     /*****  video-element ended ***** /
     /* event name ***/ "ended"
+  ],
+  [
+    /*****  video-element playing ***** /
+    /* event name ***/ "playing"
   ],
   [
     /*****  video-element thumbnailsTrack ***** /
