@@ -41,8 +41,12 @@ export class VideoPlayer {
 
     @Listen('play')
     playHandler() {
-        this.isPlaying = true;
         this.videoElement.playVideo();
+    }
+
+    @Listen('playing')
+    playingHandler(event) {
+        this.isPlaying = event.detail;
     }
 
     @Listen('pause')
