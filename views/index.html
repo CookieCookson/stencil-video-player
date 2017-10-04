@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Stencil Video Player</title>
+  <link rel="shortcut icon" href="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Ffavicon.ico?1503061237364" type="image/x-icon">
+  <link rel="icon" href="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Ffavicon.ico?1503061237364" type="image/x-icon">
+  <script src="videoplayer.js"></script>
+</head>
+<style>
+  body {
+    margin: 0;
+  }
+  .video-container {
+    max-width: 640px;
+    margin-bottom: 10px;
+  }
+</style>
+<body>
+
+  <div class="video-container">
+    <video-player
+        url="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Fthe-emoji-movie-trailer.mp4?1503315841250"
+        poster="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Fthe-emoji-movie-trailer.png?1507124087882"
+    ></video-player>
+  </div>
+  
+  <div class="video-container">
+    <video-player
+      url="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Fsintel.mp4?1507124422375"
+      poster="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Fsintel.jpg?1507124314900"
+      thumbs="https://cdn.glitch.com/7d3d6292-4790-447d-b41c-92834051e025%2Fsintel-thumbs.vtt?1507124632914"
+    ></video-player>
+  </div>
+
+  <script>
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      // auto-unregister service worker during dev mode
+      navigator.serviceWorker.ready.then(registration => {
+        registration.unregister().then(() => {
+          location.reload(true);
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>
