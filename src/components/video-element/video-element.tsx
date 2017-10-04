@@ -14,6 +14,7 @@ export class VideoElement {
     @Event() timeupdate: EventEmitter;
     @Event() duration: EventEmitter;
     @Event() ended: EventEmitter;
+    @Event() playing: EventEmitter;
     @Event() thumbnailsTrack: EventEmitter;
 
     @Element() element: HTMLElement;
@@ -25,7 +26,10 @@ export class VideoElement {
         this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
         if (this.video.duration) this.emitDuration();
         this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
+        this.video.addEventListener('durationchange', () => this.emitDuration());
         this.video.addEventListener('ended', () => this.emitEnded());
+        this.video.addEventListener('playing', () => this.emitPlaying());
+        this.video.addEventListener('pause', () => this.emitPaused());
     }
 
     @Method()
@@ -70,7 +74,6 @@ export class VideoElement {
     }
 
     emitMetadata() {
-        this.emitDuration();
         if (this.video.textTracks) this.emitTextTracks();
     }
 
@@ -90,6 +93,14 @@ export class VideoElement {
 
     emitEnded() {
         this.ended.emit();
+    }
+
+    emitPlaying() {
+        this.playing.emit(true);
+    }
+
+    emitPaused() {
+        this.playing.emit(false);
     }
 
     render() {
