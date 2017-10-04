@@ -8,6 +8,7 @@ export class VideoElement {
     @Prop() src: string;
     @Prop() poster: string;
     @Prop() thumbs: string;
+    @Prop() subtitles: string;
 
     @Event() play: EventEmitter;
     @Event() pause: EventEmitter;
@@ -16,6 +17,8 @@ export class VideoElement {
     @Event() ended: EventEmitter;
     @Event() playing: EventEmitter;
     @Event() thumbnailsTrack: EventEmitter;
+    @Event() subtitlesTrack: EventEmitter;
+    @Event() showingSubtitles: EventEmitter;
 
     @Element() element: HTMLElement;
 
@@ -30,6 +33,9 @@ export class VideoElement {
         this.video.addEventListener('ended', () => this.emitEnded());
         this.video.addEventListener('playing', () => this.emitPlaying());
         this.video.addEventListener('pause', () => this.emitPaused());
+        (this.video.textTracks as any).onchange = (changeEvent) => {
+            this.showingSubtitles.emit(changeEvent.target[0].mode === 'showing' ? true : false);
+        };
     }
 
     @Method()
@@ -67,6 +73,11 @@ export class VideoElement {
         (this.video as any).webkitEnterFullscreen();
     }
 
+    @Method()
+    toggleSubtitles(enabled) {
+        this.video.textTracks[0].mode = enabled ? 'showing' : 'hidden';
+    }
+
     handleClick(event) {
         event.preventDefault();
         if (this.video.paused) this.play.emit();
@@ -83,7 +94,10 @@ export class VideoElement {
 
     emitTextTracks() {
         for (let i = 0; i < this.video.textTracks.length; i++) {
-            if (this.video.textTracks[i].label === 'thumbnails') this.thumbnailsTrack.emit(this.video.textTracks[i]);
+            const tt = this.video.textTracks[i];
+            console.log(tt);
+            if (tt.kind === 'metadata' && tt.label === 'thumbnails') this.thumbnailsTrack.emit(tt);
+            if (tt.kind === 'subtitles') this.subtitlesTrack.emit(tt);
         }
     }
 
@@ -105,7 +119,9 @@ export class VideoElement {
 
     render() {
         let thumbsTrack = null;
+        let subtitlesTrack = null;
         if (this.thumbs) thumbsTrack = <track src={this.thumbs} kind='metadata' label='thumbnails' default />;
+        if (this.subtitles) subtitlesTrack = <track src={this.subtitles} kind='subtitles' srclang='en' label='English' default />
         return (
             <video
                 poster={this.poster}
@@ -114,6 +130,7 @@ export class VideoElement {
                 webkit-playsinline>
                 <source src={this.src} />
                 {thumbsTrack}
+                {subtitlesTrack}
             </video>
         );
     }

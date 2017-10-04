@@ -12,16 +12,19 @@ export class VideoPlayer {
     @Prop() url: string;
     @Prop() poster: string;
     @Prop() thumbs: string;
+    @Prop() subtitles: string;
 
     // Player state
     @State() isFullscreen: boolean = false;
     @State() isPlaying: boolean = false;
     @State() isMuted: boolean = false;
+    @State() isSubtitled: boolean = false;
     @State() progress: number = 0.01;
     @State() duration: number = 1;
     @State() volume: number = 1;
     @State() userFocus: boolean = true;
     @State() thumbnailsTrack: TextTrack = null;
+    @State() subtitlesTrack: TextTrack = null;
 
     // DOM elements
     @Element() element: HTMLElement;
@@ -72,6 +75,25 @@ export class VideoPlayer {
     @Listen('thumbnailsTrack')
     thumbnailsTrackHandler(event) {
         this.thumbnailsTrack = event.detail;
+    }
+
+    /**
+     * Manages subtitles state
+     */
+
+    @Listen('subtitlesTrack')
+    subtitlesTrackHandler(event) {
+        this.subtitlesTrack = event.detail;
+    }
+
+    @Listen('showingSubtitles')
+    showingSubtitlesHandler(event) {
+        this.isSubtitled = event.detail;
+    }
+
+    @Listen('subtitles')
+    subtitlesHandler(event) {
+        this.videoElement.toggleSubtitles(event.detail);
     }
 
     /**
@@ -197,8 +219,12 @@ export class VideoPlayer {
                 <volume-bar level={this.volume}></volume-bar>
             ];
         }
+        let subtitlesButton = null;
+        if (this.subtitlesTrack) {
+            subtitlesButton = <subtitles-button enabled={this.isSubtitled}></subtitles-button>
+        }
         return ([
-            <video-element src={this.url} poster={this.poster} thumbs={this.thumbs}></video-element>,
+            <video-element src={this.url} poster={this.poster} thumbs={this.thumbs} subtitles={this.subtitles}></video-element>,
             <control-bar visible={!this.isPlaying || this.userFocus}>
                 <scrub-bar progress={this.progress} duration={this.duration} thumbnails={this.thumbnailsTrack}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>
@@ -206,6 +232,7 @@ export class VideoPlayer {
                 <time-label time={this.duration}></time-label>
                 {audioControls}
                 <fullscreen-button fullscreen={this.isFullscreen}></fullscreen-button>
+                {subtitlesButton}
             </control-bar>
         ]);
     }

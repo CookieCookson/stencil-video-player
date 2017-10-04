@@ -12,7 +12,8 @@ exports.config = {
       'volume-bar',
       'time-label',
       'control-bar',
-      'thumbnail-preview'
+      'thumbnail-preview',
+      'subtitles-button'
     ] }
   ]
 };
