@@ -25,14 +25,21 @@ export class VideoElement {
     private video: HTMLVideoElement;
 
     componentDidLoad() {
+        // Get video
         this.video = this.element.querySelector('video');
-        this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
-        if (this.video.duration) this.emitDuration();
-        this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
+        // Emit default value and also when value changes for initial properties
         this.video.addEventListener('durationchange', () => this.emitDuration());
+        this.emitDuration();
+
+        this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
+        this.emitMetadata();
+
+        // Tie to video change events
+        this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
         this.video.addEventListener('ended', () => this.emitEnded());
         this.video.addEventListener('playing', () => this.emitPlaying());
         this.video.addEventListener('pause', () => this.emitPaused());
+        this.video.addEventListener('click', (event) => this.handleClick(event));
         (this.video.textTracks as any).onchange = (changeEvent) => {
             this.showingSubtitles.emit(changeEvent.target[0].mode === 'showing' ? true : false);
         };
@@ -89,13 +96,12 @@ export class VideoElement {
     }
 
     emitDuration() {
-        this.duration.emit(this.video.duration);
+        if (this.video.duration) this.duration.emit(this.video.duration);
     }
 
     emitTextTracks() {
         for (let i = 0; i < this.video.textTracks.length; i++) {
             const tt = this.video.textTracks[i];
-            console.log(tt);
             if (tt.kind === 'metadata' && tt.label === 'thumbnails') this.thumbnailsTrack.emit(tt);
             if (tt.kind === 'subtitles') this.subtitlesTrack.emit(tt);
         }
@@ -118,20 +124,8 @@ export class VideoElement {
     }
 
     render() {
-        let thumbsTrack = null;
-        let subtitlesTrack = null;
-        if (this.thumbs) thumbsTrack = <track src={this.thumbs} kind='metadata' label='thumbnails' default />;
-        if (this.subtitles) subtitlesTrack = <track src={this.subtitles} kind='subtitles' srclang='en' label='English' default />
         return (
-            <video
-                poster={this.poster}
-                onClick={($event) => this.handleClick($event)}
-                playsInline
-                webkit-playsinline>
-                <source src={this.src} />
-                {thumbsTrack}
-                {subtitlesTrack}
-            </video>
+            <slot />
         );
     }
 }

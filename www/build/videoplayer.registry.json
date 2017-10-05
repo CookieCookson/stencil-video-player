@@ -124,6 +124,20 @@
       ]
     ],
     [
+      "SUBTITLES-BUTTON",
+      "control-bar",
+      {
+        "$": "control-bar"
+      },
+      [
+        [
+          "enabled",
+          1,
+          1
+        ]
+      ]
+    ],
+    [
       "THUMBNAIL-PREVIEW",
       "control-bar",
       {
@@ -166,10 +180,16 @@
           1
         ],
         [
+          "subtitles",
+          1
+        ],
+        [
           "thumbs",
           1
         ]
-      ]
+      ],
+      0,
+      1
     ],
     [
       "VIDEO-PLAYER",
@@ -177,20 +197,7 @@
       {
         "$": "control-bar"
       },
-      [
-        [
-          "poster",
-          1
-        ],
-        [
-          "thumbs",
-          1
-        ],
-        [
-          "url",
-          1
-        ]
-      ],
+      0,
       [
         [
           "duration",
@@ -253,6 +260,18 @@
           "seekStartHandler"
         ],
         [
+          "showingSubtitles",
+          "showingSubtitlesHandler"
+        ],
+        [
+          "subtitles",
+          "subtitlesHandler"
+        ],
+        [
+          "subtitlesTrack",
+          "subtitlesTrackHandler"
+        ],
+        [
           "thumbnailsTrack",
           "thumbnailsTrackHandler"
         ],
@@ -272,7 +291,8 @@
           "webkitfullscreenchange",
           "fullscreenchangeHandler"
         ]
-      ]
+      ],
+      1
     ],
     [
       "VOLUME-BAR",

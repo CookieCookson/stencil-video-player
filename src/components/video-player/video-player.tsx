@@ -6,13 +6,7 @@ import { Component, Prop, Listen, Element, State } from '@stencil/core';
 })
 export class VideoPlayer {
     // Browser conditions
-    private isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 ? true: false;
-
-    // Props to configure the player options
-    @Prop() url: string;
-    @Prop() poster: string;
-    @Prop() thumbs: string;
-    @Prop() subtitles: string;
+    private isSafari = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? true : false;
 
     // Player state
     @State() isFullscreen: boolean = false;
@@ -84,6 +78,8 @@ export class VideoPlayer {
     @Listen('subtitlesTrack')
     subtitlesTrackHandler(event) {
         this.subtitlesTrack = event.detail;
+        // Get default enabled state of subtitles
+        if (this.subtitlesTrack) this.isSubtitled = this.subtitlesTrack.mode === 'showing' ? true : false;
     }
 
     @Listen('showingSubtitles')
@@ -221,10 +217,12 @@ export class VideoPlayer {
         }
         let subtitlesButton = null;
         if (this.subtitlesTrack) {
-            subtitlesButton = <subtitles-button enabled={this.isSubtitled}></subtitles-button>
+            subtitlesButton = <subtitles-button enabled={this.isSubtitled}></subtitles-button>;
         }
         return ([
-            <video-element src={this.url} poster={this.poster} thumbs={this.thumbs} subtitles={this.subtitles}></video-element>,
+            <video-element>
+                <slot />
+            </video-element>,
             <control-bar visible={!this.isPlaying || this.userFocus}>
                 <scrub-bar progress={this.progress} duration={this.duration} thumbnails={this.thumbnailsTrack}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>

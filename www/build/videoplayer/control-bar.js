@@ -277,6 +277,27 @@ var ScrubBar = /** @class */ (function () {
     return ScrubBar;
 }());
 
+var SubtitlesButton = /** @class */ (function () {
+    function SubtitlesButton() {
+    }
+    SubtitlesButton.prototype.handleClick = function () {
+        if (!this.enabled)
+            this.subtitles.emit(true);
+        else
+            this.subtitles.emit(false);
+    };
+    SubtitlesButton.prototype.render = function () {
+        var _this = this;
+        if (this.enabled) {
+            return (h("button", { "o": { "click": function () { return _this.handleClick(); } }, "a": { "aria-label": 'Disable Subtitles' } }, t("\uD83D\uDDE8\uFE0F")));
+        }
+        else {
+            return (h("button", { "o": { "click": function () { return _this.handleClick(); } }, "a": { "aria-label": 'Enable Subtitles' } }, t("\uD83D\uDCAC")));
+        }
+    };
+    return SubtitlesButton;
+}());
+
 var ThumbnailPreview = /** @class */ (function () {
     function ThumbnailPreview() {
     }
@@ -348,15 +369,22 @@ var VideoElement = /** @class */ (function () {
     }
     VideoElement.prototype.componentDidLoad = function () {
         var _this = this;
+        // Get video
         this.video = this.element.querySelector('video');
-        this.video.addEventListener('timeupdate', function () { return _this.emitCurrentTime(); });
-        if (this.video.duration)
-            this.emitDuration();
-        this.video.addEventListener('loadedmetadata', function () { return _this.emitMetadata(); });
+        // Emit default value and also when value changes for initial properties
         this.video.addEventListener('durationchange', function () { return _this.emitDuration(); });
+        this.emitDuration();
+        this.video.addEventListener('loadedmetadata', function () { return _this.emitMetadata(); });
+        this.emitMetadata();
+        // Tie to video change events
+        this.video.addEventListener('timeupdate', function () { return _this.emitCurrentTime(); });
         this.video.addEventListener('ended', function () { return _this.emitEnded(); });
         this.video.addEventListener('playing', function () { return _this.emitPlaying(); });
         this.video.addEventListener('pause', function () { return _this.emitPaused(); });
+        this.video.addEventListener('click', function (event) { return _this.handleClick(event); });
+        this.video.textTracks.onchange = function (changeEvent) {
+            _this.showingSubtitles.emit(changeEvent.target[0].mode === 'showing' ? true : false);
+        };
     };
     VideoElement.prototype.playVideo = function () {
         this.video.play();
@@ -379,6 +407,9 @@ var VideoElement = /** @class */ (function () {
     VideoElement.prototype.enterFullscreen = function () {
         this.video.webkitEnterFullscreen();
     };
+    VideoElement.prototype.toggleSubtitles = function (enabled) {
+        this.video.textTracks[0].mode = enabled ? 'showing' : 'hidden';
+    };
     VideoElement.prototype.handleClick = function (event) {
         event.preventDefault();
         if (this.video.paused)
@@ -391,12 +422,16 @@ var VideoElement = /** @class */ (function () {
             this.emitTextTracks();
     };
     VideoElement.prototype.emitDuration = function () {
-        this.duration.emit(this.video.duration);
+        if (this.video.duration)
+            this.duration.emit(this.video.duration);
     };
     VideoElement.prototype.emitTextTracks = function () {
         for (var i = 0; i < this.video.textTracks.length; i++) {
-            if (this.video.textTracks[i].label === 'thumbnails')
-                this.thumbnailsTrack.emit(this.video.textTracks[i]);
+            var tt = this.video.textTracks[i];
+            if (tt.kind === 'metadata' && tt.label === 'thumbnails')
+                this.thumbnailsTrack.emit(tt);
+            if (tt.kind === 'subtitles')
+                this.subtitlesTrack.emit(tt);
         }
     };
     VideoElement.prototype.emitCurrentTime = function () {
@@ -412,13 +447,7 @@ var VideoElement = /** @class */ (function () {
         this.playing.emit(false);
     };
     VideoElement.prototype.render = function () {
-        var _this = this;
-        var thumbsTrack = null;
-        if (this.thumbs)
-            thumbsTrack = h("track", { "a": { "kind": 'metadata', "label": 'thumbnails' }, "p": { "src": this.thumbs, "default": true } });
-        return (h("video", { "o": { "click": function ($event) { return _this.handleClick($event); } }, "a": { "webkit-playsinline": true }, "p": { "poster": this.poster, "playsInline": true } },
-            h("source", { "p": { "src": this.src } }),
-            thumbsTrack));
+        return (h(0, 0));
     };
     return VideoElement;
 }());
@@ -426,16 +455,18 @@ var VideoElement = /** @class */ (function () {
 var VideoPlayer = /** @class */ (function () {
     function VideoPlayer() {
         // Browser conditions
-        this.isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1 ? true : false;
+        this.isSafari = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? true : false;
         // Player state
         this.isFullscreen = false;
         this.isPlaying = false;
         this.isMuted = false;
+        this.isSubtitled = false;
         this.progress = 0.01;
         this.duration = 1;
         this.volume = 1;
         this.userFocus = true;
         this.thumbnailsTrack = null;
+        this.subtitlesTrack = null;
     }
     VideoPlayer.prototype.componentDidLoad = function () {
         this.videoElement = this.element.querySelector('video-element');
@@ -464,6 +495,21 @@ var VideoPlayer = /** @class */ (function () {
     };
     VideoPlayer.prototype.thumbnailsTrackHandler = function (event) {
         this.thumbnailsTrack = event.detail;
+    };
+    /**
+     * Manages subtitles state
+     */
+    VideoPlayer.prototype.subtitlesTrackHandler = function (event) {
+        this.subtitlesTrack = event.detail;
+        // Get default enabled state of subtitles
+        if (this.subtitlesTrack)
+            this.isSubtitled = this.subtitlesTrack.mode === 'showing' ? true : false;
+    };
+    VideoPlayer.prototype.showingSubtitlesHandler = function (event) {
+        this.isSubtitled = event.detail;
+    };
+    VideoPlayer.prototype.subtitlesHandler = function (event) {
+        this.videoElement.toggleSubtitles(event.detail);
     };
     /**
      * Manages seek state
@@ -571,15 +617,21 @@ var VideoPlayer = /** @class */ (function () {
                 h("volume-bar", { "p": { "level": this.volume } })
             ];
         }
+        var subtitlesButton = null;
+        if (this.subtitlesTrack) {
+            subtitlesButton = h("subtitles-button", { "p": { "enabled": this.isSubtitled } });
+        }
         return ([
-            h("video-element", { "p": { "src": this.url, "poster": this.poster, "thumbs": this.thumbs } }),
+            h("video-element", 0,
+                h(0, 0)),
             h("control-bar", { "p": { "visible": !this.isPlaying || this.userFocus } },
                 h("scrub-bar", { "p": { "progress": this.progress, "duration": this.duration, "thumbnails": this.thumbnailsTrack } }),
                 h("play-button", { "p": { "playing": this.isPlaying } }),
                 h("time-label", { "p": { "time": this.progress } }),
                 h("time-label", { "p": { "time": this.duration } }),
                 audioControls,
-                h("fullscreen-button", { "p": { "fullscreen": this.isFullscreen } }))
+                h("fullscreen-button", { "p": { "fullscreen": this.isFullscreen } }),
+                subtitlesButton)
         ]);
     };
     return VideoPlayer;
@@ -683,6 +735,7 @@ exports['FULLSCREEN-BUTTON'] = FullscreenButton;
 exports['MUTE-BUTTON'] = MuteButton;
 exports['PLAY-BUTTON'] = PlayButton;
 exports['SCRUB-BAR'] = ScrubBar;
+exports['SUBTITLES-BUTTON'] = SubtitlesButton;
 exports['THUMBNAIL-PREVIEW'] = ThumbnailPreview;
 exports['TIME-LABEL'] = TimeLabel;
 exports['VIDEO-ELEMENT'] = VideoElement;
@@ -856,6 +909,29 @@ exports['VOLUME-BAR'] = VolumeBar;
 
 ],
 
+/***************** subtitles-button *****************/
+[
+/** subtitles-button: tag **/
+"SUBTITLES-BUTTON",
+
+/** subtitles-button: members **/
+[
+  [ "enabled", /** prop **/ 1, /** type boolean **/ 1 ]
+],
+
+/** subtitles-button: host **/
+{},
+
+/** subtitles-button: events **/
+[
+  [
+    /*****  subtitles-button subtitles ***** /
+    /* event name ***/ "subtitles"
+  ]
+]
+
+],
+
 /***************** thumbnail-preview *****************/
 [
 /** thumbnail-preview: tag **/
@@ -936,7 +1012,9 @@ exports['VOLUME-BAR'] = VolumeBar;
   [ "seekTo", /** method **/ 6 ],
   [ "setVolume", /** method **/ 6 ],
   [ "src", /** prop **/ 1 ],
+  [ "subtitles", /** prop **/ 1 ],
   [ "thumbs", /** prop **/ 1 ],
+  [ "toggleSubtitles", /** method **/ 6 ],
   [ "unmuteVideo", /** method **/ 6 ]
 ],
 
@@ -972,6 +1050,14 @@ exports['VOLUME-BAR'] = VolumeBar;
   [
     /*****  video-element thumbnailsTrack ***** /
     /* event name ***/ "thumbnailsTrack"
+  ],
+  [
+    /*****  video-element subtitlesTrack ***** /
+    /* event name ***/ "subtitlesTrack"
+  ],
+  [
+    /*****  video-element showingSubtitles ***** /
+    /* event name ***/ "showingSubtitles"
   ]
 ]
 
@@ -989,11 +1075,10 @@ exports['VOLUME-BAR'] = VolumeBar;
   [ "isFullscreen", /** state **/ 5 ],
   [ "isMuted", /** state **/ 5 ],
   [ "isPlaying", /** state **/ 5 ],
-  [ "poster", /** prop **/ 1 ],
+  [ "isSubtitled", /** state **/ 5 ],
   [ "progress", /** state **/ 5 ],
+  [ "subtitlesTrack", /** state **/ 5 ],
   [ "thumbnailsTrack", /** state **/ 5 ],
-  [ "thumbs", /** prop **/ 1 ],
-  [ "url", /** prop **/ 1 ],
   [ "userFocus", /** state **/ 5 ],
   [ "volume", /** state **/ 5 ]
 ],

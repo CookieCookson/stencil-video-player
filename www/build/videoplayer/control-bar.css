@@ -40,6 +40,10 @@ scrub-bar progress {
   background-color: black;
 }
 
+subtitles-button button {
+  padding: 0;
+}
+
 thumbnail-preview {
   display: block;
   width: 160px;
@@ -109,7 +113,7 @@ video-player volume-bar {
   width: 100px;
 }
 
-video-player fullscreen-button {
+video-player subtitles-button, video-player fullscreen-button {
   float: right;
 }
 
@@ -134,6 +138,7 @@ fullscreen-button.💎,
 mute-button.💎,
 play-button.💎,
 scrub-bar.💎,
+subtitles-button.💎,
 thumbnail-preview.💎,
 time-label.💎,
 video-element.💎,

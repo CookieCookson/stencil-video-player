@@ -146,6 +146,34 @@ declare global {
   }
 }
 
+import { SubtitlesButton as SubtitlesButton } from './components/subtitles-button/subtitles-button';
+
+interface HTMLSubtitlesButtonElement extends SubtitlesButton, HTMLElement {
+}
+declare var HTMLSubtitlesButtonElement: {
+  prototype: HTMLSubtitlesButtonElement;
+  new (): HTMLSubtitlesButtonElement;
+};
+declare global {
+  interface HTMLElementTagNameMap {
+      "subtitles-button": HTMLSubtitlesButtonElement;
+  }
+  interface ElementTagNameMap {
+      "subtitles-button": HTMLSubtitlesButtonElement;
+  }
+  namespace JSX {
+      interface IntrinsicElements {
+          "subtitles-button": JSXElements.SubtitlesButtonAttributes;
+      }
+  }
+  namespace JSXElements {
+      export interface SubtitlesButtonAttributes extends HTMLAttributes {
+        
+          enabled?: boolean | "true" | "false"
+      }
+  }
+}
+
 import { ThumbnailPreview as ThumbnailPreview } from './components/thumbnail-preview/thumbnail-preview';
 
 interface HTMLThumbnailPreviewElement extends ThumbnailPreview, HTMLElement {
@@ -232,9 +260,11 @@ declare global {
           seekTo?: any,
           setVolume?: any,
           enterFullscreen?: any,
+          toggleSubtitles?: any,
           src?: any,
           poster?: any,
-          thumbs?: any
+          thumbs?: any,
+          subtitles?: any
       }
   }
 }
@@ -262,9 +292,6 @@ declare global {
   namespace JSXElements {
       export interface VideoPlayerAttributes extends HTMLAttributes {
         
-          url?: any,
-          poster?: any,
-          thumbs?: any
       }
   }
 }

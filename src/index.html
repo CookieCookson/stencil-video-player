@@ -18,11 +18,21 @@
 <body>
 
   <div class="video-container">
-    <video-player url="the-emoji-movie-trailer.mp4" poster="the-emoji-movie-trailer.png" subtitles="the-emoji-movie-trailer-subtitles-en.vtt"></video-player>
+    <video-player>
+      <video poster="the-emoji-movie-trailer.png">
+        <source src="the-emoji-movie-trailer.mp4" />
+        <track src="the-emoji-movie-trailer-subtitles-en.vtt" kind="subtitles" srclang="en" label="English" default />
+      </video>
+    </video-player>
   </div>
   
   <div class="video-container">
-    <video-player url="sintel.mp4" poster="sintel.jpg" thumbs="sintel-thumbs.vtt"></video-player>
+    <video-player>
+      <video poster="sintel.jpg">
+        <source src="sintel.mp4" />
+        <track src="sintel-thumbs.vtt" kind="metadata" label="thumbnails" default />
+      </video>
+    </video-player>
   </div>
 
 </body>
