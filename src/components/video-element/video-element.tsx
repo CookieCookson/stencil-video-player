@@ -25,16 +25,19 @@ export class VideoElement {
     private video: HTMLVideoElement;
 
     componentDidLoad() {
-        // Get video
         this.video = this.element.querySelector('video');
-        // Emit default value and also when value changes for initial properties
-        this.video.addEventListener('durationchange', () => this.emitDuration());
+        this.emitInitialValues();
+        this.bindEventListeners();
+    }
+
+    emitInitialValues() {
         this.emitDuration();
-
-        this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
         this.emitMetadata();
+    }
 
-        // Tie to video change events
+    bindEventListeners() {
+        this.video.addEventListener('durationchange', () => this.emitDuration());
+        this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
         this.video.addEventListener('timeupdate', () => this.emitCurrentTime());
         this.video.addEventListener('ended', () => this.emitEnded());
         this.video.addEventListener('playing', () => this.emitPlaying());
