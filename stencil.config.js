@@ -13,7 +13,8 @@ exports.config = {
       'time-label',
       'control-bar',
       'thumbnail-preview',
-      'subtitles-button'
+      'subtitles-button',
+      'cues-box'
     ] }
   ]
 };

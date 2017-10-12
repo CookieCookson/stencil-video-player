@@ -1,4 +1,4 @@
-import { Component, Prop, Listen, Element, State } from '@stencil/core';
+import { Component, Listen, Element, State } from '@stencil/core';
 
 @Component({
     tag: 'video-player',
@@ -223,6 +223,7 @@ export class VideoPlayer {
             <video-element>
                 <slot />
             </video-element>,
+            <cues-box cues={this.subtitlesTrack}></cues-box>,
             <control-bar visible={!this.isPlaying || this.userFocus}>
                 <scrub-bar progress={this.progress} duration={this.duration} thumbnails={this.thumbnailsTrack}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>
