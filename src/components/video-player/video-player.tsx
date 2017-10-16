@@ -22,14 +22,28 @@ export class VideoPlayer {
 
     // DOM elements
     @Element() element: HTMLElement;
-    private videoElement: any;
+    private video: any;
 
     // Internal states
     private wasPlaying: boolean; // maintains play state whilst scrubbing
     private userFocusTimeout: NodeJS.Timer;
 
     componentDidLoad() {
-        this.videoElement = this.element.querySelector('video-element');
+        this.video = this.element.querySelector('video');
+        this.bindEventListeners();
+    }
+    
+    bindEventListeners() {
+        this.video.addEventListener('durationchange', () => this.durationHandler());
+        this.video.addEventListener('loadedmetadata', () => this.emitMetadata());
+        this.video.addEventListener('timeupdate', () => this.timeupdateHandler());
+        this.video.addEventListener('ended', () => this.endedHandler());
+        this.video.addEventListener('playing', () => this.playingHandler(true));
+        this.video.addEventListener('pause', () => this.playingHandler(false));
+        this.video.addEventListener('click', (clickEvent) => this.handleVideoClick(clickEvent));
+        (this.video.textTracks as any).onchange = (changeEvent) => {
+            this.showingSubtitlesHandler(changeEvent.target[0].mode === 'showing' ? true : false);
+        };
     }
 
     /**
@@ -38,58 +52,69 @@ export class VideoPlayer {
 
     @Listen('play')
     playHandler() {
-        this.videoElement.playVideo();
-    }
-
-    @Listen('playing')
-    playingHandler(event) {
-        this.isPlaying = event.detail;
+        this.video.play();
     }
 
     @Listen('pause')
     pauseHandler() {
-        this.isPlaying = false;
-        this.videoElement.pauseVideo();
+        this.video.pause();
     }
 
-    @Listen('ended')
+    playingHandler(playing) {
+        this.isPlaying = playing;
+    }
+
     endedHandler() {
         this.isPlaying = false;
+    }
+    
+    handleVideoClick(clickEvent) {
+        clickEvent.preventDefault();
+        if (this.video.paused) this.playHandler();
+        else this.pauseHandler();
     }
 
     /**
      * Manages player metadata state
      */
 
-    @Listen('duration')
-    durationHandler(event) {
-        this.duration = event.detail;
+    durationHandler() {
+        this.duration = this.video.duration;
+    }
+    
+    emitMetadata() {
+        if (this.video.textTracks) this.processTextTracks();
     }
 
-    @Listen('thumbnailsTrack')
-    thumbnailsTrackHandler(event) {
-        this.thumbnailsTrack = event.detail;
+    processTextTracks() {
+        for (let i = 0; i < this.video.textTracks.length; i++) {
+            const tt = this.video.textTracks[i];
+            if (tt.kind === 'metadata' && tt.label === 'thumbnails') this.thumbnailsTrackHandler(tt);
+            if (tt.kind === 'subtitles') this.subtitlesTrackHandler(tt);
+        }
+    }
+
+    thumbnailsTrackHandler(thumbnailsTrack) {
+        this.thumbnailsTrack = thumbnailsTrack;
     }
 
     /**
      * Manages subtitles state
      */
 
-    @Listen('subtitlesTrack')
-    subtitlesTrackHandler(event) {
-        this.subtitlesTrack = event.detail;
+    @Listen('subtitles')
+    subtitlesHandler(event) {
+        this.video.textTracks[0].mode = event.detail ? 'showing' : 'hidden';
+    }
+
+    subtitlesTrackHandler(subtitlesTrack) {
+        this.subtitlesTrack = subtitlesTrack;
         // Get default enabled state of subtitles
         if (this.subtitlesTrack) this.isSubtitled = this.subtitlesTrack.mode === 'showing' ? true : false;
     }
 
-    @Listen('showingSubtitles')
-    showingSubtitlesHandler(event) {
-        this.isSubtitled = event.detail;
-    }
-
-    @Listen('subtitles')
-    subtitlesHandler(event) {
-        this.videoElement.toggleSubtitles(event.detail);
+    showingSubtitlesHandler(isShowingSubtitles) {
+        this.isSubtitled = isShowingSubtitles;
     }
 
     /**
@@ -98,25 +123,24 @@ export class VideoPlayer {
 
     @Listen('seekStart')
     seekStartHandler(event) {
-        this.videoElement.seekTo(event.detail);
+        this.video.currentTime = event.detail;
         this.wasPlaying = this.isPlaying;
         if (this.wasPlaying) this.pauseHandler();
     }
 
     @Listen('seekMove')
     seekMoveHandler(event) {
-        this.videoElement.seekTo(event.detail);
+        this.video.currentTime = event.detail;
     }
 
     @Listen('seekEnd')
     seekEndHandler(event) {
-        this.videoElement.seekTo(event.detail);
+        this.video.currentTime = event.detail;
         if (this.wasPlaying) this.playHandler();
     }
 
-    @Listen('timeupdate')
-    timeupdateHandler(event) {
-        this.progress = event.detail;
+    timeupdateHandler() {
+        this.progress = this.video.currentTime;
     }
 
     /**
@@ -128,19 +152,19 @@ export class VideoPlayer {
         this.volume = event.detail;
         if (event.detail === 0) this.isMuted = true;
         else this.isMuted = false;
-        this.videoElement.setVolume(event.detail);
+        this.video.volume = event.detail;
     }
 
     @Listen('mute')
     muteHandler() {
         this.isMuted = true;
-        this.videoElement.muteVideo();
+        this.video.volume = 0;
     }
 
     @Listen('unmute')
     unmuteHandler() {
         this.isMuted = false;
-        this.videoElement.unmuteVideo();
+        this.video.volume = 1;
     }
 
     /**
@@ -150,7 +174,7 @@ export class VideoPlayer {
     @Listen('enterFullscreen')
     enterFullscreen() {
         if (!this.isSafari) this.element.webkitRequestFullscreen();
-        else this.videoElement.enterFullscreen();
+        else (this.video as any).webkitEnterFullscreen();
     }
 
     @Listen('exitFullscreen')
@@ -166,6 +190,7 @@ export class VideoPlayer {
     /**
      * Manages user focus state
      */
+
     @Listen('mousemove')
     mousemoveHandler() {
         this.userFocus = true;
@@ -220,9 +245,6 @@ export class VideoPlayer {
             subtitlesButton = <subtitles-button enabled={this.isSubtitled}></subtitles-button>;
         }
         return ([
-            <video-element>
-                <slot />
-            </video-element>,
             <cues-box cues={this.subtitlesTrack} visible={this.isSubtitled}></cues-box>,
             <control-bar visible={!this.isPlaying || this.userFocus}>
                 <scrub-bar progress={this.progress} duration={this.duration} thumbnails={this.thumbnailsTrack}></scrub-bar>
