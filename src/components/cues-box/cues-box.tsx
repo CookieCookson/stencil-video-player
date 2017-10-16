@@ -5,6 +5,7 @@ import { Component, Prop, PropDidChange, State } from '@stencil/core';
     styleUrl: 'cues-box.scss'
 })
 export class CuesBox {
+    @Prop() visible: boolean;
     @Prop() cues: any;
     @State() cue: string;
 
@@ -25,8 +26,12 @@ export class CuesBox {
     }
 
     render() {
-        return (
-            <span>{this.cue}</span>
-        );
+        if (this.visible) {
+            return (
+                <span>{this.cue}</span>
+            );
+        } else {
+            return;
+        }
     }
 }

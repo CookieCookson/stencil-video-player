@@ -223,7 +223,7 @@ export class VideoPlayer {
             <video-element>
                 <slot />
             </video-element>,
-            <cues-box cues={this.subtitlesTrack}></cues-box>,
+            <cues-box cues={this.subtitlesTrack} visible={this.isSubtitled}></cues-box>,
             <control-bar visible={!this.isPlaying || this.userFocus}>
                 <scrub-bar progress={this.progress} duration={this.duration} thumbnails={this.thumbnailsTrack}></scrub-bar>
                 <play-button playing={this.isPlaying}></play-button>
